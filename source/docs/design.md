@@ -102,7 +102,7 @@ block scan into `dim` strided reads. The transpose that dimension major
 would save in the distance kernel is far cheaper than those scattered
 accesses: transposing a two megabyte block costs about 200 microseconds,
 while the eight rows in parallel that it would enable save about 11
-microseconds. The comparison is a factor of twenty against the change, so the
+microseconds. The comparison is a factor of eighteen against the change, so the
 layout stays row major.
 
 ## 2. The block cache

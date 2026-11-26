@@ -527,42 +527,19 @@ def fig9():
         "数据目录 10.86 MiB\n"
         "（计入 cgroup 峰值内存）", C_FILL, 8)
 
-    group(ax, 2, 4, 96, 21, "宿主机块设备")
-    box(ax, 6, 8, 88, 13,
+    group(ax, 2, 2, 96, 23, "宿主机块设备")
+    box(ax, 6, 6, 88, 13,
         "wal.dat（预写日志）　col.dat（标量行镜像）　vec.dat（向量列）　meta.dat（行目录）\n"
         "数据经容器可写层 /data 映射至此；查询阶段全部命中页缓存，不产生块设备读", C_FILL, 8.2)
 
-    arrow(ax, (26, 66), (26, 52), "读块", lx=20, ly=59)
-    arrow(ax, (26, 52), (26, 43), "")
-    arrow(ax, (73, 66), (73, 52), "读块", lx=68, ly=59)
-    arrow(ax, (73, 52), (73, 43), "")
+    arrow(ax, (26, 66), (26, 54), "读块", lx=20, ly=60)
+    arrow(ax, (73, 66), (73, 54), "读块", lx=68, ly=60)
     arrow(ax, (26, 34), (26, 21), "刷盘", lx=33, ly=27.5)
     arrow(ax, (46, 73), (52, 73), "JSONL", lx=49, ly=77)
 
-    caption(fig, "图 9  硬件框图与 I/O 通路")
+    caption(fig, "硬件框图与 I/O 通路")
+    check_overflow(fig, "fig-9")
     save(fig, "fig-9-hardware.png")
-
-
-# ---------------------------------------------------------------- 图 10 CPU 热点
-def fig10():
-    labels = ["L2 距离内核", "TopK 送堆循环", "过滤谓词", "向量字面量解析",
-              "字符串比较", "分配器", "其他与未归类"]
-    vals = [42.14, 18.01, 5.46, 6.60, 2.31, 1.89, 23.59]
-    colors = ["#4a7fb5", "#7ba3cc", "#a8c4e0", "#c6d8ec",
-              "#dde7f1", "#eef2f7", "#f6f8fa"]
-    fig, ax = plt.subplots(figsize=(8.0, 3.60))
-    wedges, _ = ax.pie(vals, colors=colors, startangle=90,
-                        wedgeprops=dict(width=0.42, edgecolor="white", linewidth=1.4))
-    ax.text(0, 0.12, "60.15%", ha="center", va="center",
-            fontsize=17, fontweight="bold", color="#1f2a37")
-    ax.text(0, -0.22, "距离计算占比", ha="center", va="center",
-            fontsize=9, color="#6b7280")
-    ax.legend(wedges, ["%s　%.2f%%" % (l, v) for l, v in zip(labels, vals)],
-              loc="center left", bbox_to_anchor=(0.97, 0.5), frameon=False, fontsize=9)
-    ax.set_aspect("equal")
-    caption(fig, "图 10  查询阶段 CPU 时间构成（perf 采样剖析）")
-    save(fig, "fig-10-cpu-profile.png")
-
 
 # ---------------------------------------------------------------- 图 11 逐轮交错测量
 def fig11():
@@ -602,4 +579,4 @@ def fig11():
 
 
 if __name__ == "__main__":
-    fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); fig9(); fig10(); fig11()
+    fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8(); fig9(); fig11()
