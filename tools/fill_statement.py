@@ -21,8 +21,11 @@ WORK_NAME = "RAGStore：面向检索增强生成的轻量级向量存储引擎"
 def main():
     if not os.path.exists(TEMPLATE):
         raise SystemExit(f"缺少模板: {TEMPLATE}")
-    shutil.copyfile(TEMPLATE, OUTPUT)
-    doc = Document(OUTPUT)
+    tmp = OUTPUT + ".tmp"
+    if os.path.exists(tmp):
+        os.remove(tmp)
+    shutil.copyfile(TEMPLATE, tmp)
+    doc = Document(tmp)
 
     filled = False
     for p in doc.paragraphs:
@@ -41,7 +44,12 @@ def main():
     if not filled:
         raise RuntimeError("未找到声明正文段落")
 
-    doc.save(OUTPUT)
+    doc.save(tmp)
+    try:
+        os.replace(tmp, OUTPUT)
+    except PermissionError:
+        print("!! 目标文件被占用（可能正�� Word 中打开），新文件保留在：", os.path.normpath(tmp))
+        raise SystemExit(2)
     print("written", os.path.normpath(OUTPUT))
     print("作品名称:", WORK_NAME)
 

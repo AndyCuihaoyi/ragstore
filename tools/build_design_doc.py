@@ -23,7 +23,7 @@ TEMPLATE = os.path.join(ROOT, "templates", "作品设计文档模板.docx")
 OUTPUT = os.path.join(ROOT, "作品设计文档.docx")
 
 BODY_PT = 12.0        # 正文：小四（模板说明要求）
-TABLE_PT = 10.5       # 表格内文字：五号
+TABLE_PT = 12.0       # 表格内文字：小四（与正文一致）
 CODE_PT = 10.5
 CAPTION_PT = 10.5
 LINE_SPACING = 1.5
@@ -150,6 +150,7 @@ class Writer:
             set_para_format(p, 16, line=1.5, space_before=12, space_after=6, keep_next=True)
         elif kind == "h3":
             p = self._new_para()
+            p.style = self.doc.styles["Heading 3"]
             set_run_font(p.add_run(block[1]), CN_HEAD, EN_FONT, 14, True)
             set_para_format(p, 14, line=1.5, space_before=10, space_after=4, keep_next=True)
         elif kind == "p":
@@ -241,6 +242,39 @@ class Writer:
 
 
 # ------------------------------------------------------------ 模板处理
+def normalize_chapter_headings(doc):
+    """模板自带的章标题段落带有 run 级 16pt 直接格式，会覆盖 heading 1 样式的 22pt，
+    使章标题与二级标题视觉上等大。此处统一为黑体 22pt。"""
+    for p in doc.paragraphs:
+        if p.style.name in ("Heading 1", "标题 1"):
+            for r in p.runs:
+                set_run_font(r, CN_HEAD, EN_FONT, 22, True)
+            set_para_format(p, 22, line=1.5, space_before=16, space_after=12, keep_next=True)
+
+
+def ensure_heading3(doc):
+    """模板没有三级标题样式，h3 段落将只是加粗的正文，目录与导航窗格中不可见。"""
+    from docx.enum.style import WD_STYLE_TYPE
+    names = {s.name for s in doc.styles}
+    if "Heading 3" in names:
+        return
+    st = doc.styles.add_style("Heading 3", WD_STYLE_TYPE.PARAGRAPH)
+    try:
+        st.base_style = doc.styles["Heading 2"]
+    except KeyError:
+        pass
+    st.font.size = Pt(14)
+    st.font.bold = True
+    rPr = st.element.get_or_add_rPr()
+    rf = rPr.find(qn("w:rFonts"))
+    if rf is None:
+        rf = OxmlElement("w:rFonts")
+        rPr.insert(0, rf)
+    rf.set(qn("w:ascii"), EN_FONT)
+    rf.set(qn("w:hAnsi"), EN_FONT)
+    rf.set(qn("w:eastAsia"), CN_HEAD)
+
+
 def fill_cover(doc):
     for p in doc.paragraphs:
         txt = p.text.strip()
@@ -272,9 +306,19 @@ def add_work_name_line(doc):
     para = Paragraph(new_p, title._parent)
     for r in list(para.runs):
         r._element.getparent().remove(r._element)
-    set_run_font(para.add_run(f"作品名称：{WORK_NAME}"), size=14, bold=True)
+    name, _, subtitle = WORK_NAME.partition("：")
+    set_run_font(para.add_run(f"作品名称：{name}"), CN_HEAD, EN_FONT, 14, True)
     set_para_format(para, 14, line=1.5, align=WD_ALIGN_PARAGRAPH.CENTER,
-                    space_before=6, space_after=6)
+                    space_before=6, space_after=2)
+
+    sub_p = copy.deepcopy(para._p)
+    para._p.addnext(sub_p)
+    sub = Paragraph(sub_p, para._parent)
+    for r in list(sub.runs):
+        r._element.getparent().remove(r._element)
+    set_run_font(sub.add_run(subtitle), CN_FONT, EN_FONT, 12)
+    set_para_format(sub, 12, line=1.5, align=WD_ALIGN_PARAGRAPH.CENTER,
+                    space_before=0, space_after=6)
 
 
 def find_heading(doc, text):
@@ -392,11 +436,16 @@ def fix_footers(doc):
 def main():
     if not os.path.exists(TEMPLATE):
         raise SystemExit(f"缺少模板: {TEMPLATE}")
-    shutil.copyfile(TEMPLATE, OUTPUT)
-    doc = Document(OUTPUT)
+    tmp = OUTPUT + ".tmp"
+    if os.path.exists(tmp):
+        os.remove(tmp)
+    shutil.copyfile(TEMPLATE, tmp)
+    doc = Document(tmp)
 
     setup_page(doc)
     fix_footers(doc)
+    ensure_heading3(doc)
+    normalize_chapter_headings(doc)
     fill_cover(doc)
     drop_hint_and_blanks(doc)
 
@@ -426,7 +475,12 @@ def main():
     for a in (a3, a4):
         a._element.getparent().remove(a._element)
 
-    doc.save(OUTPUT)
+    doc.save(tmp)
+    try:
+        os.replace(tmp, OUTPUT)
+    except PermissionError:
+        print("!! 目标文件被占用（可能正�� Word 中打开），新文件保留在：", os.path.normpath(tmp))
+        raise SystemExit(2)
     print("written", os.path.normpath(OUTPUT))
 
 
