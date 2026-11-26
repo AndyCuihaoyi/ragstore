@@ -125,7 +125,7 @@ def main():
     parser.add_argument("--dim", type=int, default=128)
     args = parser.parse_args()
 
-    work = tempfile.mkdtemp(prefix="mvdb-steps-")
+    work = tempfile.mkdtemp(prefix="ragstore-steps-")
     data_dir = os.path.join(work, "data")
     try:
         write_data(args.binary, data_dir, args.rows, args.dim)

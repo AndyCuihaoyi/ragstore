@@ -140,7 +140,7 @@ def main():
         vector = [rng.uniform(-1.0, 1.0) for _ in range(dim)]
         rows.append((i, "c%d" % (i % args.categories), vector))
 
-    work = tempfile.mkdtemp(prefix="mvdb-ann-eq-")
+    work = tempfile.mkdtemp(prefix="ragstore-ann-eq-")
     data_dir = os.path.join(work, "data")
     second_dir = os.path.join(work, "data2")
     failures = 0

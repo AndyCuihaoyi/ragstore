@@ -114,7 +114,7 @@ def main():
         vector = [rng.uniform(-1.0, 1.0) for _ in range(dim)]
         rows.append((i, "c%d" % (i % args.categories), vector))
 
-    work = tempfile.mkdtemp(prefix="mvdb-ann-")
+    work = tempfile.mkdtemp(prefix="ragstore-ann-")
     data_dir = os.path.join(work, "data")
     failures = 0
     try:

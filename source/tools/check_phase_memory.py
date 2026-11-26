@@ -122,7 +122,7 @@ def main():
     parser.add_argument("--dim", type=int, default=128)
     args = parser.parse_args()
 
-    work = tempfile.mkdtemp(prefix="mvdb-phase-")
+    work = tempfile.mkdtemp(prefix="ragstore-phase-")
     data_dir = os.path.join(work, "data")
     report = {"rows": args.rows, "dim": args.dim}
     try:

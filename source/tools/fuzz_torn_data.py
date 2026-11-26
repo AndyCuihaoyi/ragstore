@@ -164,7 +164,7 @@ def main():
     failures = 0
     for round_no in range(args.rounds):
         rng = random.Random(args.seed + round_no)
-        work = tempfile.mkdtemp(prefix="mvdb-fuzz-")
+        work = tempfile.mkdtemp(prefix="ragstore-fuzz-")
         data_dir = os.path.join(work, "data")
         try:
             build_database(args.binary, data_dir)

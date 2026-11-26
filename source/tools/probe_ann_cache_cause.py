@@ -68,7 +68,7 @@ def ask(session, sql, mode):
 
 
 def one_run(config, binary, rows, text, dim, batch, cpus, block_rows, pool_mb, label):
-    work = tempfile.mkdtemp(prefix="mvdb-cause-")
+    work = tempfile.mkdtemp(prefix="ragstore-cause-")
     log_path = os.path.join(work, "stderr.log")
     probe = ",".join(str(i % 100) for i in range(dim))
     body = "x" * text if text else ""

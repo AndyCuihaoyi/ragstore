@@ -32,7 +32,7 @@ BUDGET = os.path.join(HERE, "measure_case_budget.py")
 
 def one_round(binary, rows, text, dim, batch):
     """One measurement of the whole case, and the phases that matter."""
-    out = tempfile.mktemp(prefix="mvdb-inter-", suffix=".json")
+    out = tempfile.mktemp(prefix="ragstore-inter-", suffix=".json")
     try:
         subprocess.run(
             [sys.executable, BUDGET, "--binary", binary,

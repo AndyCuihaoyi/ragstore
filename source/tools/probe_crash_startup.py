@@ -134,7 +134,7 @@ def main():
     parser.add_argument("--output", default=None)
     args = parser.parse_args()
 
-    work = tempfile.mkdtemp(prefix="mvdb-crash-")
+    work = tempfile.mkdtemp(prefix="ragstore-crash-")
     data_dir = os.path.join(work, "data")
     stderr_path = os.path.join(work, "stderr.log")
     report = {"args": vars(args)}

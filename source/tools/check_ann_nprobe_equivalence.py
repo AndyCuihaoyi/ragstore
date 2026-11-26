@@ -129,7 +129,7 @@ def truth(rows, query, k, category=None):
 
 def load(binary, rows, dim, nprobe):
     """Load the rows into a fresh database and build the index."""
-    work = tempfile.mkdtemp(prefix="mvdb-nprobe-")
+    work = tempfile.mkdtemp(prefix="ragstore-nprobe-")
     data_dir = os.path.join(work, "data")
     proc = start(binary, data_dir, nprobe)
     try:
@@ -158,7 +158,7 @@ def load(binary, rows, dim, nprobe):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--broken", default="/tmp/mvdb_broken")
+    parser.add_argument("--broken", default="/tmp/ragstore_broken")
     parser.add_argument(
         "--fixed",
         default=os.path.join(
@@ -171,7 +171,7 @@ def main():
     )
     parser.add_argument(
         "--scoring",
-        default="/tmp/mvdb_baseline",
+        default="/tmp/ragstore_baseline",
         help="the build that passed the admission gate; it is reported, "
         "not asserted against the broken one",
     )

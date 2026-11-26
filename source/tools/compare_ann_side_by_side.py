@@ -113,7 +113,7 @@ def main():
 
     report = {"args": vars(args), "runs": []}
     for label, binary in (("A", args.a), ("B", args.b)):
-        work = tempfile.mkdtemp(prefix="mvdb-sbs-")
+        work = tempfile.mkdtemp(prefix="ragstore-sbs-")
         try:
             result = run(binary, args.rows, args.dim, args.batch, args.text, work)
             result["label"] = label

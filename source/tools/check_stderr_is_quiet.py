@@ -64,7 +64,7 @@ def main():
     parser.add_argument("--binary", required=True)
     args = parser.parse_args()
 
-    work = tempfile.mkdtemp(prefix="mvdb-stderr-")
+    work = tempfile.mkdtemp(prefix="ragstore-stderr-")
     failures = []
     try:
         data_dir = os.path.join(work, "data")

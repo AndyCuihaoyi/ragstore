@@ -29,7 +29,7 @@ set -u -o pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BINARY="${ROOT}/ragstore/target/release/ragstore"
-WORK="$(mktemp -d "${TMPDIR:-/tmp}/mvdb-smoke-XXXXXX")"
+WORK="$(mktemp -d "${TMPDIR:-/tmp}/ragstore-smoke-XXXXXX")"
 
 cleanup() {
     rm -rf "${WORK}"
@@ -75,7 +75,7 @@ run_db() {
     local dir="$1"
     local mode="$2"
     shift 2
-    python3 "${ROOT}/tools/mvdb_client.py" \
+    python3 "${ROOT}/tools/ragstore_client.py" \
         --binary "${BINARY}" \
         --data-dir "${dir}" \
         --mode "${mode}" \

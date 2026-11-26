@@ -15,8 +15,8 @@
 
 set -e
 
-IMAGE="${RAGSTORE_CONTAINER_IMAGE:-mvdb-final}"
-DATA_DIR="${RAGSTORE_DATA_DIR:-/tmp/mvdb-container-data}"
+IMAGE="${RAGSTORE_CONTAINER_IMAGE:-ragstore}"
+DATA_DIR="${RAGSTORE_DATA_DIR:-/tmp/ragstore-container-data}"
 
 # Collect the arguments, and rewrite the data directory.
 ARGS=""

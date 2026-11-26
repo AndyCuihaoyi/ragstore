@@ -151,9 +151,9 @@ def main():
     parser.add_argument("--limit-mb", type=int, default=2048)
     args = parser.parse_args()
 
-    work = tempfile.mkdtemp(prefix="mvdb-oom-")
+    work = tempfile.mkdtemp(prefix="ragstore-oom-")
     data_dir = os.path.join(work, "data")
-    cgroup = make_cgroup("mvdb-oom-%d" % os.getpid(), args.limit_mb * 1024 * 1024)
+    cgroup = make_cgroup("ragstore-oom-%d" % os.getpid(), args.limit_mb * 1024 * 1024)
     outcome = {"rows": args.rows, "limit_mb": args.limit_mb}
     try:
         try:

@@ -94,7 +94,7 @@ def main():
     failures = 0
     for round_no in range(args.rounds):
         rng = random.Random(args.seed + round_no)
-        work = tempfile.mkdtemp(prefix="mvdb-killwrite-")
+        work = tempfile.mkdtemp(prefix="ragstore-killwrite-")
         data_dir = os.path.join(work, "data")
         try:
             # The first run creates the table and fills it.

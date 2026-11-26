@@ -17,11 +17,11 @@
 set -u
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-IMAGE="${RAGSTORE_CONTAINER_IMAGE:-mvdb-final}"
+IMAGE="${RAGSTORE_CONTAINER_IMAGE:-ragstore}"
 RUNNER="${RAGSTORE_BENCH_RUNNER:-rust:1.98-bookworm}"
 
 # The benchmark needs a data directory of its own.
-WORK="$(mktemp -d "${TMPDIR:-/tmp}/mvdb-bench-container-XXXXXX")"
+WORK="$(mktemp -d "${TMPDIR:-/tmp}/ragstore-bench-container-XXXXXX")"
 trap 'rm -rf "$WORK"' EXIT
 
 docker run --rm -i \

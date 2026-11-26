@@ -574,7 +574,7 @@ def main():
 
     temporary = None
     if args.data_dir is None:
-        temporary = tempfile.mkdtemp(prefix="mvdb-bench-")
+        temporary = tempfile.mkdtemp(prefix="ragstore-bench-")
         data_dir = temporary
     else:
         shutil.rmtree(args.data_dir, ignore_errors=True)

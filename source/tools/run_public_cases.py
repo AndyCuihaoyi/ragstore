@@ -273,7 +273,7 @@ def run_case(case_id, cases_dir, binary, mode, verbose):
             % (case_id, len(expected_statements), len(expectations))
         )
 
-    work = tempfile.mkdtemp(prefix="mvdb-case-")
+    work = tempfile.mkdtemp(prefix="ragstore-case-")
     failures = []
     db = None
     index = 0

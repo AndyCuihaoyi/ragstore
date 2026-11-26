@@ -62,7 +62,7 @@ def directory_size(path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--image", default="mvdb-jsonl:local")
+    parser.add_argument("--image", default="ragstore")
     parser.add_argument("--rows", type=int, default=200000)
     parser.add_argument("--dim", type=int, default=128)
     parser.add_argument("--queries", type=int, default=50)
@@ -70,8 +70,8 @@ def main():
     parser.add_argument("--cpus", default="2")
     args = parser.parse_args()
 
-    name = "mvdb-limit-probe"
-    volume = tempfile.mkdtemp(prefix="mvdb-limit-")
+    name = "ragstore-limit-probe"
+    volume = tempfile.mkdtemp(prefix="ragstore-limit-")
     docker("rm", "--force", "--volumes", name, check=False)
 
     # The container is started with the very limits of the judge, and the

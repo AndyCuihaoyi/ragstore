@@ -344,7 +344,7 @@ def main():
         "loads": [],
     }
 
-    work = tempfile.mkdtemp(prefix="mvdb-budget-")
+    work = tempfile.mkdtemp(prefix="ragstore-budget-")
     log_path = os.path.join(work, "stderr.log")
     try:
         out = measure(

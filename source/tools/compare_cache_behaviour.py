@@ -37,7 +37,7 @@ DECODE_RE = re.compile(
 
 
 def run(binary, rows, dim, batch, text):
-    work = tempfile.mkdtemp(prefix="mvdb-cache-")
+    work = tempfile.mkdtemp(prefix="ragstore-cache-")
     data_dir = os.path.join(work, "data")
     log_path = os.path.join(work, "stderr.log")
     probe = ",".join(str(i % 100) for i in range(dim))

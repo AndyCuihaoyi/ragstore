@@ -125,7 +125,7 @@ def close(proc):
 
 
 def measure(binary, rows, dim, categories=8):
-    work = tempfile.mkdtemp(prefix="mvdb-mem-")
+    work = tempfile.mkdtemp(prefix="ragstore-mem-")
     data_dir = os.path.join(work, "data")
     try:
         proc = start(binary, data_dir)

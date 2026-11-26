@@ -105,7 +105,7 @@ def main():
     parser.add_argument("--text", type=int, default=1000)
     args = parser.parse_args()
 
-    work = tempfile.mkdtemp(prefix="mvdb-breakdown-")
+    work = tempfile.mkdtemp(prefix="ragstore-breakdown-")
     data_dir = os.path.join(work, "data")
     body = "x" * args.text if args.text else ""
     out = {"rows": args.rows, "text": args.text}

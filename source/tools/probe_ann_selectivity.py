@@ -48,7 +48,7 @@ def load_config():
 
 
 def run(config, binary, rows, dim, batch, cpus, text, selectivities):
-    work = tempfile.mkdtemp(prefix="mvdb-sel-")
+    work = tempfile.mkdtemp(prefix="ragstore-sel-")
     log_path = os.path.join(work, "stderr.log")
     probe = ",".join(str(i % 100) for i in range(dim))
     body = "x" * text if text else ""

@@ -170,7 +170,7 @@ def main():
     # Every cut is a separate database: the cuts are not independent of each
     # other, because one cut changes the file the next cut is applied to.
     for cut in (1, 5, 17, 40, 100, 300, 1000):
-        work = tempfile.mkdtemp(prefix="mvdb-torn-")
+        work = tempfile.mkdtemp(prefix="ragstore-torn-")
         try:
             build_database(args.binary, os.path.join(work, "data"))
             try:
@@ -182,7 +182,7 @@ def main():
             shutil.rmtree(work, ignore_errors=True)
 
     for cut in (40, 200):
-        work = tempfile.mkdtemp(prefix="mvdb-torn-meta-")
+        work = tempfile.mkdtemp(prefix="ragstore-torn-meta-")
         try:
             build_database(args.binary, os.path.join(work, "data"))
             try:

@@ -74,12 +74,12 @@ def main():
     args = ap.parse_args()
 
     binary = args.binary or os.path.join(ROOT, "ragstore", "target", "release", "ragstore")
-    work = tempfile.mkdtemp(prefix="mvdb-cgroup-")
+    work = tempfile.mkdtemp(prefix="ragstore-cgroup-")
     try:
         current, controllers = find_writable_cgroup()
         child = None
         if current is not None:
-            child = os.path.join(current, "mvdb-peak-%d" % os.getpid())
+            child = os.path.join(current, "ragstore-peak-%d" % os.getpid())
             try:
                 os.makedirs(child, exist_ok=True)
                 for name in ("memory",):

@@ -107,7 +107,7 @@ def main():
 
     print("%9s %14s %14s %12s" % ("rows", "recovery", "recovery+index", "data dir"))
     for rows in [int(r) for r in args.rows.split(",")]:
-        work = tempfile.mkdtemp(prefix="mvdb-recovery-")
+        work = tempfile.mkdtemp(prefix="ragstore-recovery-")
         data_dir = os.path.join(work, "data")
         try:
             write_data(args.binary, data_dir, rows, args.dim, False)

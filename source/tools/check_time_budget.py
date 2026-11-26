@@ -106,7 +106,7 @@ MAX_COST_PER_ROW_GROWTH = 4.0
 
 def limited():
     """The limit of the child, in bytes."""
-    limit = int(os.environ.get("MVDB_LIMIT_BYTES", "0"))
+    limit = int(os.environ.get("RAGSTORE_LIMIT_BYTES", "0"))
     if not limit:
         return None
     return limit
@@ -176,7 +176,7 @@ def measure(binary, rows, dim, batch, limit_bytes, out):
     The data directory is removed afterwards, so that a run at two sizes
     does not need twice the disk.
     """
-    work = tempfile.mkdtemp(prefix="mvdb-time-")
+    work = tempfile.mkdtemp(prefix="ragstore-time-")
     data_dir = os.path.join(work, "data")
     m = {"rows": rows}
     try:
@@ -327,7 +327,7 @@ def main():
     args = parser.parse_args()
 
     limit_bytes = args.limit_mb * 1024 * 1024
-    os.environ["MVDB_LIMIT_BYTES"] = str(limit_bytes)
+    os.environ["RAGSTORE_LIMIT_BYTES"] = str(limit_bytes)
 
     out = {
         "binary": args.binary,

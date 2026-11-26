@@ -107,7 +107,7 @@ def close(proc):
 
 def run(binary, rows, dim, batch, limit_bytes):
     """Time every phase of one build."""
-    work = tempfile.mkdtemp(prefix="mvdb-probe-")
+    work = tempfile.mkdtemp(prefix="ragstore-probe-")
     data_dir = os.path.join(work, "data")
     m = {"binary": binary, "rows": rows, "dim": dim}
     try:

@@ -109,7 +109,7 @@ def main():
     parser.add_argument("--rows", type=int, default=200)
     args = parser.parse_args()
 
-    work = tempfile.mkdtemp(prefix="mvdb-filter-")
+    work = tempfile.mkdtemp(prefix="ragstore-filter-")
     data_dir = os.path.join(work, "data")
     try:
         proc = start(args.binary, data_dir)

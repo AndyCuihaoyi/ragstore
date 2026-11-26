@@ -63,7 +63,7 @@ def make_insert(rows, text, dim):
 
 def run_one(binary, rows, text, dim, cpus):
     """Write `rows` rows with one statement, and say what happened."""
-    work = tempfile.mkdtemp(prefix="mvdb-onestmt-")
+    work = tempfile.mkdtemp(prefix="ragstore-onestmt-")
     try:
         proc = subprocess.Popen(
             build_command(binary, cpus),

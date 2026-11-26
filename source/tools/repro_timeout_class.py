@@ -429,7 +429,7 @@ def main():
     args = parser.parse_args()
 
     config = load_config()
-    work = tempfile.mkdtemp(prefix="mvdb-class-")
+    work = tempfile.mkdtemp(prefix="ragstore-class-")
     log_path = os.path.join(work, "stderr.log")
     report = {"config": config, "args": vars(args), "loads": {}}
 

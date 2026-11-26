@@ -22,7 +22,7 @@ set -u
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BINARY="${1:-$ROOT/ragstore/target/release/ragstore}"
-WORK="$(mktemp -d "${TMPDIR:-/tmp}/mvdb-killtest-XXXXXX")"
+WORK="$(mktemp -d "${TMPDIR:-/tmp}/ragstore-killtest-XXXXXX")"
 DATA="$WORK/data"
 
 # The number of kill rounds.

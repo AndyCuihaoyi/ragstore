@@ -242,7 +242,7 @@ def main():
     config = dict(config)
     config["request_timeout"] = args.timeout
 
-    work = tempfile.mkdtemp(prefix="mvdb-corner-")
+    work = tempfile.mkdtemp(prefix="ragstore-corner-")
     log_path = os.path.join(work, "stderr.log")
     report = {"args": vars(args), "cases": {}}
     slow = []

@@ -27,7 +27,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 def measure(binary, args, mode):
     """Measure one build once and return the result of the benchmark."""
-    with tempfile.TemporaryDirectory(prefix="mvdb-perf-") as data_dir:
+    with tempfile.TemporaryDirectory(prefix="ragstore-perf-") as data_dir:
         command = [
             sys.executable,
             os.path.join(HERE, "bench.py"),

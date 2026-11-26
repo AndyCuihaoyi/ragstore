@@ -73,7 +73,7 @@ def main():
     args = ap.parse_args()
 
     binary = args.binary or os.path.join(ROOT, "ragstore", "target", "release", "ragstore")
-    work = tempfile.mkdtemp(prefix="mvdb-io-")
+    work = tempfile.mkdtemp(prefix="ragstore-io-")
     try:
         db = B.Db(binary, work, mode=args.mode,
                   cpu=int(args.cpu) if args.cpu else None)

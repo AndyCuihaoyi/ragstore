@@ -78,7 +78,7 @@ def main():
     )
     args = parser.parse_args()
 
-    work = tempfile.mkdtemp(prefix="mvdb-rules-")
+    work = tempfile.mkdtemp(prefix="ragstore-rules-")
     data_dir = os.path.join(work, "data")
     passed = True
     try:

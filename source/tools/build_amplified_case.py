@@ -198,7 +198,7 @@ def main():
     if not args.out:
         parser.error("--out is required")
 
-    work = tempfile.mkdtemp(prefix="mvdb-amplified-")
+    work = tempfile.mkdtemp(prefix="ragstore-amplified-")
     try:
         data_dir = os.path.join(work, "data")
         statements = build_statements(args)

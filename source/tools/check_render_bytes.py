@@ -19,7 +19,7 @@ BINARY = os.path.join(ROOT, "ragstore", "target", "release", "ragstore")
 
 
 def run(binary, sqls, mode="exact"):
-    work = tempfile.mkdtemp(prefix="mvdb-render-")
+    work = tempfile.mkdtemp(prefix="ragstore-render-")
     data_dir = os.path.join(work, "data")
     proc = subprocess.Popen(
         [binary, "--data-dir", data_dir],

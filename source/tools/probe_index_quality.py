@@ -60,7 +60,7 @@ def ask(session, sql, mode):
 
 
 def run(config, binary, rows, dim, batch, cpus, label):
-    work = tempfile.mkdtemp(prefix="mvdb-quality-")
+    work = tempfile.mkdtemp(prefix="ragstore-quality-")
     log_path = os.path.join(work, "stderr.log")
     probe = ",".join(str(i % 100) for i in range(dim))
     result = {"label": label, "binary": binary, "rows": rows}

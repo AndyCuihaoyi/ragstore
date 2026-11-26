@@ -60,7 +60,7 @@ DECODE_RE = re.compile(
 
 def run(binary, rows, dim, batch, text, pool_mb, mode, label):
     """Build the table, run the filtered TopK, and report the counters."""
-    work = tempfile.mkdtemp(prefix="mvdb-falsify-")
+    work = tempfile.mkdtemp(prefix="ragstore-falsify-")
     data_dir = os.path.join(work, "data")
     log_path = os.path.join(work, "stderr.log")
     probe = ",".join(str(i % 100) for i in range(dim))

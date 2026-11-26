@@ -31,7 +31,7 @@ import time
 
 def limited():
     """The limit of the child, in bytes."""
-    limit = int(os.environ.get("MVDB_LIMIT_BYTES", "0"))
+    limit = int(os.environ.get("RAGSTORE_LIMIT_BYTES", "0"))
     if not limit:
         return None
     return limit
@@ -115,9 +115,9 @@ def main():
     args = parser.parse_args()
 
     limit_bytes = args.limit_mb * 1024 * 1024
-    os.environ["MVDB_LIMIT_BYTES"] = str(limit_bytes)
+    os.environ["RAGSTORE_LIMIT_BYTES"] = str(limit_bytes)
 
-    work = tempfile.mkdtemp(prefix="mvdb-limit-")
+    work = tempfile.mkdtemp(prefix="ragstore-limit-")
     data_dir = os.path.join(work, "data")
     out = {
         "rows": args.rows,

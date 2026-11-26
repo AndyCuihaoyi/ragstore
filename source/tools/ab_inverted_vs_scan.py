@@ -48,7 +48,7 @@ DECODE_RE = re.compile(
 
 def run(binary, rows, dim, batch, text, categories, label):
     """Build a table whose filter column has `categories` values."""
-    work = tempfile.mkdtemp(prefix="mvdb-ab-")
+    work = tempfile.mkdtemp(prefix="ragstore-ab-")
     data_dir = os.path.join(work, "data")
     log_path = os.path.join(work, "stderr.log")
     probe = ",".join(str(i % 100) for i in range(dim))

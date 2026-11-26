@@ -145,7 +145,7 @@ STATEMENTS = [
 
 def run(binary, statements):
     """The answers of one build, in the order of the statements."""
-    work = tempfile.mkdtemp(prefix="mvdb-equiv-")
+    work = tempfile.mkdtemp(prefix="ragstore-equiv-")
     data_dir = os.path.join(work, "data")
     answers = []
     db = Database(binary, data_dir)
@@ -166,7 +166,7 @@ def run(binary, statements):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--old", default="/tmp/mvdb_baseline")
+    parser.add_argument("--old", default="/tmp/ragstore_baseline")
     parser.add_argument(
         "--new",
         default=os.path.join(

@@ -66,7 +66,7 @@ def main():
     parser.add_argument("--out", default="/tmp/perf-ann.data")
     args = parser.parse_args()
 
-    work = tempfile.mkdtemp(prefix="mvdb-perf-")
+    work = tempfile.mkdtemp(prefix="ragstore-perf-")
     data_dir = os.path.join(work, "data")
     try:
         build(args.binary, data_dir, args.rows, args.dim, args.batch, args.text)

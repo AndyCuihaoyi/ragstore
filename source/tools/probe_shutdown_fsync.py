@@ -122,7 +122,7 @@ def main():
         config = json.load(handle)
     budget = config["request_timeout"]
 
-    work = tempfile.mkdtemp(prefix="mvdb-fsync-log-")
+    work = tempfile.mkdtemp(prefix="ragstore-fsync-log-")
     log_path = os.path.join(work, "stderr.log")
     report = {"args": vars(args), "budget_s": budget, "points": []}
     try:

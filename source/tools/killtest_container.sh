@@ -14,13 +14,13 @@
 # container, and the answers are read back as protocol messages. The
 # assertions are the ones of `tools/killtest.sh`, unchanged.
 #
-#   RAGSTORE_CONTAINER_IMAGE=mvdb-jsonl:local bash tools/killtest_container.sh
+#   RAGSTORE_CONTAINER_IMAGE=ragstore bash tools/killtest_container.sh
 
 set -u
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-IMAGE="${RAGSTORE_CONTAINER_IMAGE:-mvdb-final}"
-WORK="$(mktemp -d "${TMPDIR:-/tmp}/mvdb-killtest-container-XXXXXX")"
+IMAGE="${RAGSTORE_CONTAINER_IMAGE:-ragstore}"
+WORK="$(mktemp -d "${TMPDIR:-/tmp}/ragstore-killtest-container-XXXXXX")"
 DATA="$WORK/data"
 
 # The number of kill rounds.
@@ -77,7 +77,7 @@ run_sql() {
     to_jsonl "$sql_file" "$jsonl" || return 1
     local name
     container_seq=$((container_seq + 1))
-    name="mvdb-killtest-$$-$container_seq"
+    name="ragstore-killtest-$$-$container_seq"
     docker run --rm -i \
         --name "$name" \
         -v "$DATA":/data \
@@ -95,7 +95,7 @@ kill_during() {
     to_jsonl "$sql_file" "$jsonl" || return 1
     local name
     container_seq=$((container_seq + 1))
-    name="mvdb-killtest-$$-$container_seq"
+    name="ragstore-killtest-$$-$container_seq"
     docker run --rm -i \
         --name "$name" \
         -v "$DATA":/data \

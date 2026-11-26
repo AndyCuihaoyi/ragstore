@@ -28,7 +28,7 @@ import bench as B  # noqa: E402
 
 def one_round(binary, mode, rows, dim, queries, batch):
     """Run the benchmark once and return its measurements."""
-    work = tempfile.mkdtemp(prefix="mvdb-cmp-")
+    work = tempfile.mkdtemp(prefix="ragstore-cmp-")
     try:
         db = B.Db(binary, work, mode=mode)
         data = B.generate_rows(42, rows, dim)

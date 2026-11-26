@@ -109,7 +109,7 @@ def build(session, rows, text, dim, batch):
 
 
 def measure(config, binary, rows, text, dim, batch, cpus, label, nprobe=None):
-    work = tempfile.mkdtemp(prefix="mvdb-ann-")
+    work = tempfile.mkdtemp(prefix="ragstore-ann-")
     log_path = os.path.join(work, "stderr.log")
     probe = ",".join(str(i % 100) for i in range(dim))
     result = {"label": label, "rows": rows, "text": text, "nprobe": nprobe}

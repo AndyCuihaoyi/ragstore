@@ -105,7 +105,7 @@ def main():
     parser.add_argument("--dim", type=int, default=128)
     args = parser.parse_args()
 
-    work = tempfile.mkdtemp(prefix="mvdb-recovery-")
+    work = tempfile.mkdtemp(prefix="ragstore-recovery-")
     data_dir = os.path.join(work, "data")
     try:
         proc = start(args.binary, data_dir)
