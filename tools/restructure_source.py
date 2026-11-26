@@ -18,11 +18,20 @@ import shutil
 import sys
 
 # 开发过程存档：保持原样，不重命名、不改写
-KEEP_VERBATIM = {
+#
+# 目录项按前缀匹配：agent/ 下的每一个文件都属于存档，
+# 只按文件名匹配会漏掉 agent/conversation.json，
+# 造成根副本被保留而 agent 副本被改写，两份材料就此分叉。
+KEEP_VERBATIM_DIRS = ("agent",)
+KEEP_VERBATIM_FILES = {
     "conversation.json",
-    "agent",
     "tools/build_conversation_json.py",
     "tools/check_conversation_against_record.py",
+    "tools/check_conversation_json.py",
+    "tools/check_prompt_authorship.py",
+    "tools/record_current_turns.py",
+    "tools/recover_record_turns.py",
+    "tools/record_snapshot.json",
 }
 
 # 上游 seekdb 骨架，与本作品无关，剔除
@@ -109,7 +118,9 @@ def main():
 
             rel_file = f"{rel}/{f}" if rel else f
 
-            if rel_file in KEEP_VERBATIM:
+            keep = rel_file in KEEP_VERBATIM_FILES or \
+                rel_file.split("/")[0] in KEEP_VERBATIM_DIRS
+            if keep:
                 shutil.copy2(full, os.path.join(target_dir, f))
                 kept_verbatim.append(rel_file)
                 continue
@@ -133,10 +144,13 @@ def main():
     tool_src = os.path.join(dst, "tools")
     tool_rec = os.path.join(rec, "tools")
     os.makedirs(tool_rec, exist_ok=True)
-    for name in ("build_conversation_json.py", "check_conversation_against_record.py"):
-        p = os.path.join(tool_src, name)
+    for name in sorted(KEEP_VERBATIM_FILES):
+        if not name.startswith("tools/"):
+            continue
+        base = name.split("/", 1)[1]
+        p = os.path.join(tool_src, base)
         if os.path.exists(p):
-            shutil.move(p, os.path.join(tool_rec, name))
+            shutil.move(p, os.path.join(tool_rec, base))
 
     print(f"重命名文件数 : {changed}")
     print(f"原样保留     : {len(kept_verbatim)} 项 -> development-record/")

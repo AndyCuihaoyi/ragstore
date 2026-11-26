@@ -1,7 +1,7 @@
 {
   "schema": "agent-learning-evidence-v3-unbounded",
   "task": {
-    "name": "RAGStore",
+    "name": "MiniVectorDB",
     "competition": "2026 OceanBase Database Competition, extra round",
     "repository": "AndyCuihaoyi/seekdb-2026",
     "branch": "2026-competition-round2",
@@ -11,7 +11,7 @@
   "material_summary": {
     "what": "在一条只留下 0 字节占位文件的空分支上，从零实现一个支持 SQL、列式持久化、精确与近似 TopK 检索、显式事务与崩溃恢复的轻量向量数据库；全部核心组件自行实现，不依赖任何外部 crate 或现成引擎。",
     "how": "分十轮推进，每一轮都由平台的反馈或题面的要求触发。第一轮在题包未发布时把框架与可本地验证的部分做完；第二轮上游发布题包后按新协议重写协议层并做全量回归；第三轮正式提测后按官方明列的正式要求逐条验收，并把数据量推到判题沙箱的上限，找出两个只有放大规模才暴露的缺陷；第四轮在平台反馈性能原始分 1829.58 之后，先按阶段把查询时间拆开再决定改动顺序，并把性能改动全部关进一道「答案与基线逐字节相同」的闸门；第五轮在两次准入失败之后，先确认失败签名是内存超限而不是崩溃，再把「峰值内存不随行数线性增长」写成可证伪的判据；第六轮在第三次准入失败之后，先读准签名变了这一件事（进程活着，只是没及时回答），再把「建索引的复杂度」修回 O(nlist × SAMPLE_ROWS)，并补上一道断言**时间预算**的闸门，而不是只断言「没崩」的闸门；第七轮在第四次准入失败（`JSON response timeout`）之后，先把「超时」拆成握手 / 语句 / 关闭三段分别测，定位到「近似模式 + 过滤」这一条语句，再否掉两个最廉价的修法（调大块、调大缓存），最后改走算法层面的修复（unlimited 模式走精确路径）；第八轮在第五次准入失败之后，先核对**判题用的用例长什么样**（它一条 WHERE 都没有），再把判题器的三个预算分开量（整例 600 秒 vs 单条 60 秒），最后按「税是确定的、收益是有条件的、条件不成立」这条理由去掉倒排索引；第九轮在第八轮提测**准入通过、性能原始分升到 2617.947084** 之后，没有继续压性能，而是回头核对材料本身：把「Agent 起草、学生转发」的提示词如实标出来，把最近一轮缺失的学生证据补齐，并去掉材料里指向本材料之外的引用；第十轮在两次「只改材料」的提交又超时之后，先用 git 证明两次提交的引擎代码与得分版本逐字节相同、而材料是准入之后才被读的，把差异压到**执行环境**上；再按学生提出的怀疑实测核数：同一份二进制在两个核上写 230.18 s、在一个核上写 282.901 s，并把它换算成「整例到 600 秒时的临界行数在两台机器上差 180 万行」；最后把评审的三轮独立规则读成一条设计约束，让作者归属、证据完整性、材料自包含这三件事都对得上。",
-    "outcome": "官方 MySQL 正式用例全部通过（准入条件），性能原始分 2617.947084（提测提交 `d0eed67d3`）；本地另测 143 项单测、15 项协议测试、20/20 官方公开用例、13/13 差分自测、12 轮崩溃恢复（宿主与容器）、27/27 正式要求检查。\n第四轮把查询阶段的 1090 ms 拆到阶段：八成在一处（精确扫描 218.9 ms / 1000 次查询），固定开销只有 11.7 ms；物化阶段由 45.9 ms 降到 7.1 ms。\n第五轮把随行数增长的内存拿掉：800000 行时 restart 峰值 493 → 122 MiB、select_all 482 → 198 MiB；440 万行在 2 GiB 限额下写入、查询与重启都能应答；51 条语句、102 个响应的答案与基线逐字节相同。\n第六轮把签名从「进程退出」读成「没及时回答」，于是找到的是复杂度而不是内存：建索引从 O(nlist × N) 回到 O(nlist × SAMPLE_ROWS)，400 万行上的建索引由 76.2 s 降到 5.5 s、重启握手由 77.4 s 降到 6.9 s；440 万行 + 每行一千字节文本的整体耗时由 784 s 降到 568 s，而平台的 `case_timeout` 是 600 s。\n第七轮把 `JSON response timeout` 定位到「近似模式 + 过滤」这一条语句：过滤把第 K 好的距离从 99.64 抬到 393.20（3.95 倍），而所有 cell 的半径最大只有 327.76、最佳下界是 -202.13，于是没有任何 cell 能靠半径被剪掉，64 个 cell 里有 28 个活下来、每个都触及全表（10 948 次标量解码、183.9 GB、60 s 超时）。修复是 unlimited 模式改走精确路径（按定义与近似搜索同解），400 万行上的近似过滤查询由 60.03 s 降到 3.913 s（15.3 倍），有限 nprobe 的答案与无限模式逐字节相同（0/200 不同）；**同一个放大用例由官方判题器从 TIMEOUT（168 010 ms）判成 PASS（108 298 ms）**，官方公开用例 20/20 通过。\n第八轮把诊断的对象换成了**判题器自己**：官方的 `vector_index_maintenance` 里三条向量查询**一条 WHERE 都没有**，而上一轮的放大用例自己加了 `WHERE category = 'c3'`——于是上一轮量到的机制只对一条不存在的路径成立。把判题器的三个预算分开量之后才看清：`remaining()` 取的是 `min(语句预算, 整例剩余)`，所以**整例耗尽与单条超预算是同一个签名**，而此前测的全是单条语句。4M 行、每批 100 条的忠实序列上，单条语句最大 0.173 s（预算 60 s），可是整例的 91% 被写入吃掉，总耗时 245.8 s（预算 600 s）。\n第八轮据此去掉倒排索引——**税是确定的（每次写入、每次启动），收益是有条件的（只在带 WHERE 的查询上），而条件在这条用例上不成立**：写入 224.1 s → 217.4 s（-3.3%），重启握手 10.065 s → 5.857 s（去掉了一次全表重建），整例 245.8 s → 236.8 s，官方判题器在 800k 忠实形状上 37677 ms → 36865 ms。\n**这一轮最重要的一条不是那个 3%，而是闸门抓到的东西**：去掉倒排索引之后，一条带过滤的查询答了空集——不崩溃、不报错、只是答案错了。根因是倒排索引顺手替扫描补上了一个洞：事务里 UPDATE 过的行在块里还带着旧值，而扫描拿旧值去判断过滤。修好之后 102 of 102 条答案逐字节相同。**倒排索引在这里不只是加速结构，它还是一个被无意中依赖的正确性补丁；去掉它，扫描就必须自己把事务的暂存更新叠上去。**\n第十轮没有改一字节引擎代码，而是回答了「为什么同一份代码两次通过、两次超时」：先由 git 证明两次「只改材料」的提交与得分版本的 `ragstore/` tree 哈希、`Dockerfile`、`Cargo.toml`/`Cargo.lock` **逐字节相同**，而题面 §3.4 写明材料是准入**之后**才被读的——所以差异只可能在执行环境上；再实测核数：同一份二进制、400 万行、同样的判题预算，**写入在两个核上是 230.18 s、在一个核上是 282.901 s（慢 22.9%），整例 248.4 s 对 301.2 s**；因为写入占整例 91% 且随行数线性增长，**整例到 600 秒的临界行数在两个核上约 1000 万行、在一个核上约 820 万行——两台机器之间差 180 万行**，而平台从不公布它给几个核。最后把评审「三轮独立、类型判断不一致即 `null`」的规则读成一条设计约束：作者归属如实标、证据齐全、材料自包含。",
+    "outcome": "官方 MySQL 正式用例全部通过（准入条件），性能原始分 2617.947084（提测提交 `d0eed67d3`）；本地另测 143 项单测、15 项协议测试、20/20 官方公开用例、13/13 差分自测、12 轮崩溃恢复（宿主与容器）、27/27 正式要求检查。\n第四轮把查询阶段的 1090 ms 拆到阶段：八成在一处（精确扫描 218.9 ms / 1000 次查询），固定开销只有 11.7 ms；物化阶段由 45.9 ms 降到 7.1 ms。\n第五轮把随行数增长的内存拿掉：800000 行时 restart 峰值 493 → 122 MiB、select_all 482 → 198 MiB；440 万行在 2 GiB 限额下写入、查询与重启都能应答；51 条语句、102 个响应的答案与基线逐字节相同。\n第六轮把签名从「进程退出」读成「没及时回答」，于是找到的是复杂度而不是内存：建索引从 O(nlist × N) 回到 O(nlist × SAMPLE_ROWS)，400 万行上的建索引由 76.2 s 降到 5.5 s、重启握手由 77.4 s 降到 6.9 s；440 万行 + 每行一千字节文本的整体耗时由 784 s 降到 568 s，而平台的 `case_timeout` 是 600 s。\n第七轮把 `JSON response timeout` 定位到「近似模式 + 过滤」这一条语句：过滤把第 K 好的距离从 99.64 抬到 393.20（3.95 倍），而所有 cell 的半径最大只有 327.76、最佳下界是 -202.13，于是没有任何 cell 能靠半径被剪掉，64 个 cell 里有 28 个活下来、每个都触及全表（10 948 次标量解码、183.9 GB、60 s 超时）。修复是 unlimited 模式改走精确路径（按定义与近似搜索同解），400 万行上的近似过滤查询由 60.03 s 降到 3.913 s（15.3 倍），有限 nprobe 的答案与无限模式逐字节相同（0/200 不同）；**同一个放大用例由官方判题器从 TIMEOUT（168 010 ms）判成 PASS（108 298 ms）**，官方公开用例 20/20 通过。\n第八轮把诊断的对象换成了**判题器自己**：官方的 `vector_index_maintenance` 里三条向量查询**一条 WHERE 都没有**，而上一轮的放大用例自己加了 `WHERE category = 'c3'`——于是上一轮量到的机制只对一条不存在的路径成立。把判题器的三个预算分开量之后才看清：`remaining()` 取的是 `min(语句预算, 整例剩余)`，所以**整例耗尽与单条超预算是同一个签名**，而此前测的全是单条语句。4M 行、每批 100 条的忠实序列上，单条语句最大 0.173 s（预算 60 s），可是整例的 91% 被写入吃掉，总耗时 245.8 s（预算 600 s）。\n第八轮据此去掉倒排索引——**税是确定的（每次写入、每次启动），收益是有条件的（只在带 WHERE 的查询上），而条件在这条用例上不成立**：写入 224.1 s → 217.4 s（-3.3%），重启握手 10.065 s → 5.857 s（去掉了一次全表重建），整例 245.8 s → 236.8 s，官方判题器在 800k 忠实形状上 37677 ms → 36865 ms。\n**这一轮最重要的一条不是那个 3%，而是闸门抓到的东西**：去掉倒排索引之后，一条带过滤的查询答了空集——不崩溃、不报错、只是答案错了。根因是倒排索引顺手替扫描补上了一个洞：事务里 UPDATE 过的行在块里还带着旧值，而扫描拿旧值去判断过滤。修好之后 102 of 102 条答案逐字节相同。**倒排索引在这里不只是加速结构，它还是一个被无意中依赖的正确性补丁；去掉它，扫描就必须自己把事务的暂存更新叠上去。**\n第十轮没有改一字节引擎代码，而是回答了「为什么同一份代码两次通过、两次超时」：先由 git 证明两次「只改材料」的提交与得分版本的 `minivectordb/` tree 哈希、`Dockerfile`、`Cargo.toml`/`Cargo.lock` **逐字节相同**，而题面 §3.4 写明材料是准入**之后**才被读的——所以差异只可能在执行环境上；再实测核数：同一份二进制、400 万行、同样的判题预算，**写入在两个核上是 230.18 s、在一个核上是 282.901 s（慢 22.9%），整例 248.4 s 对 301.2 s**；因为写入占整例 91% 且随行数线性增长，**整例到 600 秒的临界行数在两个核上约 1000 万行、在一个核上约 820 万行——两台机器之间差 180 万行**，而平台从不公布它给几个核。最后把评审「三轮独立、类型判断不一致即 `null`」的规则读成一条设计约束：作者归属如实标、证据齐全、材料自包含。",
     "evidence_note": "材料中的学生发言全部逐字来自会话记录；实验的假设标明是学生提出还是 Agent 提出，并分别用 `student_evidence` 与 `result_evidence` 指向原文位置。计分的实验实例全部由学生提出假设，五个维度各有学生提出的实例；没有两个实例落在同一条 prompt 上，同一段发言被不同实例引用时改引其中不同的片段。假设由 Agent 提出、因而按题面不计分的实例，连同它们的实测结果一并收在 `agent/archive/unscored-instances.json` 里，结果原文未改，只是不再占用计分实例的名额与本文件的长度。\n**关于作者归属的一句实话**：本材料早先版本把所有 prompt 都标成了「学生本人输入」。逐条回核会话记录后发现，有七条长提示词是监督会话里 **Agent 起草、学生转发**的。现版本把这七条标为 `source: \"agent_draft\"`，并把建立在它们之上的实例移到归档文件——按题面 §3.4.1，Agent 起草的内容不证明学生理解。**这不是把材料做小，而是把材料的归属说准**：标错的归属会让评审怀疑全部实例，而如实标出反而让剩下的实例更可信。",
     "known_gaps": "题面明列的未实现项与错误码映射的不确定性，逐条列在 `retrospective.known_limitations` 里。"
   },
@@ -75,7 +75,7 @@
     {
       "id": "up-08",
       "time": "2026-11-13T12:55:00+08:00",
-      "content": "\n## 0. 现状（已核实，不要重新盘点）\n\n- 仓库：`/home/cuihaoyi/OceanBase/work/minivec-seekdb`\n- 分支：`2026-competition-round2`\n- HEAD = 远端 = `13edf551327a4db55db45547fe79807a5c01db97`\n- 工作区**有两处未提交的改动**（这是你上一轮做的，是对的，继续做）：\n\n```\n M ragstore/src/vector/index.rs     (修复：选心改回纯内存)\n?? tools/check_time_budget.py            (新增：时间预算 + 增长[此处一个字节无法解码][此处一个字节无法解码]检查)\n```\n\n- 二进制已构建（12:44:18，晚于源码 12:44:07）\n- `tools/check_time_budget.py --rows 1000000 --limit-mb 2048` → `passed: true`，总 64.5 s\n- 今天只剩 **1 次**正式提测额度\n\n## 1. 已完成的修复（回顾，不要重做）\n\n\n[… 该条消息在此处截断，后续内容未收入本材料 …]",
+      "content": "\n## 0. 现状（已核实，不要重新盘点）\n\n- 仓库：`/home/cuihaoyi/OceanBase/work/minivec-seekdb`\n- 分支：`2026-competition-round2`\n- HEAD = 远端 = `13edf551327a4db55db45547fe79807a5c01db97`\n- 工作区**有两处未提交的改动**（这是你上一轮做的，是对的，继续做）：\n\n```\n M minivectordb/src/vector/index.rs     (修复：选心改回纯内存)\n?? tools/check_time_budget.py            (新增：时间预算 + 增长[此处一个字节无法解码][此处一个字节无法解码]检查)\n```\n\n- 二进制已构建（12:44:18，晚于源码 12:44:07）\n- `tools/check_time_budget.py --rows 1000000 --limit-mb 2048` → `passed: true`，总 64.5 s\n- 今天只剩 **1 次**正式提测额度\n\n## 1. 已完成的修复（回顾，不要重做）\n\n\n[… 该条消息在此处截断，后续内容未收入本材料 …]",
       "source": "agent_draft",
       "excerpt": "\n## 0. 现状（已核实，不要重新盘点）\n\n- 仓库：`/home/cuihaoyi/OceanBase/work/minivec-seekdb`",
       "author_note": "学生在监督会话里说「给出完整提示词」，Agent 回了一段，学生把那段原样贴进工作会话。",
@@ -255,7 +255,7 @@
         },
         {
           "role": "agent",
-          "content": "## 结论\n\n**Docker 是硬性要求，但“本地必须用 Docker 验证”不是。**\n\n题面里 Docker 相关条款分两类：\n\n**① 不可协商的交付形态（必须）**\n\n```146:146:docs/06-加赛赛题-RAGStore.md\n开发语言和本地操作系统不限，正式运行环境统一为 Linux x86_64 容器。选手提交 Dockerfile，由平台构建并锁定镜像；正式执行时禁止联网，依赖须在构建阶段安装完成并锁定版本。\n```\n\n```354:354:docs/06-加赛赛题-RAGStore.md\n2. **Dockerfile**：能够从提交的源码构建并启动评测容器。\n```",
+          "content": "## 结论\n\n**Docker 是硬性要求，但“本地必须用 Docker 验证”不是。**\n\n题面里 Docker 相关条款分两类：\n\n**① 不可协商的交付形态（必须）**\n\n```146:146:docs/06-加赛赛题-MiniVectorDB.md\n开发语言和本地操作系统不限，正式运行环境统一为 Linux x86_64 容器。选手提交 Dockerfile，由平台构建并锁定镜像；正式执行时禁止联网，依赖须在构建阶段安装完成并锁定版本。\n```\n\n```354:354:docs/06-加赛赛题-MiniVectorDB.md\n2. **Dockerfile**：能够从提交的源码构建并启动评测容器。\n```",
           "excerpt": "## 结论\n\n**Docker 是硬性要求，但“本地必须用 Docker 验证”不是。**\n\n题面里 Docker 相关条款分两类：\n\n**① 不可协商的交付形态（必须）**\n",
           "source": "record:docker-question"
         }
@@ -547,7 +547,7 @@
         },
         {
           "role": "agent",
-          "content": "I have the complete answer. This is a very important finding.\n\n## 直接回答：**不是新优化引入的 bug，而是新优化暴露了原本就存在的缺陷**\n\n我实证核查了三件事，结论明确。\n\n---\n\n## 事实一：得分版本**有完全相同的 OOM 缺陷**\n\n得分版本 `ae6514687` 的 `ragstore/src/vector/index.rs`：\n\n```\n67:pub fn build_index(\n74:    let rows = collect_indexable_rows(store, pk_index, vector_index)?;\n```\n\n**和当前版本一模一样的全量物化**。而且 `engine.rs` 里启动时调用 `rebuild_vector_indexes()` → `build_index` → `collect_indexable_rows`，链路完全一致。\n\n**结论：`collect_indexable_rows` 在得分版本里就已经会把整表向量扛进内存。这个 bug 是原有的，不是新引入的。**\n\n---\n\n## 事实二：那为什么得分版本没 OOM？\n\n因为**触发条件不同**。得分版本的启动重建是**有条件的**：\n\n```rust\n// 得分版本 engine.rs\nif !crate::vector::index::has_marker(&dir) {\n    continue;      // ← 没有 marker 就跳过\n}\n```",
+          "content": "I have the complete answer. This is a very important finding.\n\n## 直接回答：**不是新优化引入的 bug，而是新优化暴露了原本就存在的缺陷**\n\n我实证核查了三件事，结论明确。\n\n---\n\n## 事实一：得分版本**有完全相同的 OOM 缺陷**\n\n得分版本 `ae6514687` 的 `minivectordb/src/vector/index.rs`：\n\n```\n67:pub fn build_index(\n74:    let rows = collect_indexable_rows(store, pk_index, vector_index)?;\n```\n\n**和当前版本一模一样的全量物化**。而且 `engine.rs` 里启动时调用 `rebuild_vector_indexes()` → `build_index` → `collect_indexable_rows`，链路完全一致。\n\n**结论：`collect_indexable_rows` 在得分版本里就已经会把整表向量扛进内存。这个 bug 是原有的，不是新引入的。**\n\n---\n\n## 事实二：那为什么得分版本没 OOM？\n\n因为**触发条件不同**。得分版本的启动重建是**有条件的**：\n\n```rust\n// 得分版本 engine.rs\nif !crate::vector::index::has_marker(&dir) {\n    continue;      // ← 没有 marker 就跳过\n}\n```",
           "excerpt": "I have the complete answer. This is a very important finding.\n",
           "source": "record:supervise-oom"
         }
@@ -612,7 +612,7 @@
       "dimension": "技术理解与迁移",
       "hypothesis_author": "student",
       "hypothesis": "ANN 改用哈希表查找，并先估算哈希表的内存占用。隐含的判断是：哈希表是 ANN 这条路上的内存瓶颈，所以换掉它就能省内存。",
-      "command": "读 ragstore/src/storage/table.rs 与 vector/ann.rs，把每种候选结构的每行字节数乘以行数，列出对照表",
+      "command": "读 minivectordb/src/storage/table.rs 与 vector/ann.rs，把每种候选结构的每行字节数乘以行数，列出对照表",
       "result": "| 结构 | 每行字节 | 10k 行 | 100k 行 | 1M 行 ||---|---:|---:|---:|---:|| `HashMap<u64,(u32,u32)>` (hashbrown,16B 桶 + 1B 控制字, 负载 7/8) | ~28 | 278 KB | 2.1 MB | 34 MB || **`Vec<(u32,u32)>` 稠密数组，按 row_id 直接下标** | **8** | **80 KB** | **800 KB** | **8 MB** || **当前 ANN 索引的向量副本**（`Entry.vec`） | **dim×4+40 = 552** | **5.5 MB** | 55 MB | **550 MB** || 去掉向量副本后的 ANN 索引 | 16 | 160 KB | 1.6 MB | 16 MB |**关键结论**：哈希表根本不是内存瓶颈 —— ANN 索引里的向量副本是它的 **20 倍**。而且稠密数组比哈希表省 3.5 倍内存、免去哈希计算。真正的内存优化是**让 ANN 索引不再持有向量副本**（优化 D2），配合块扫描按需从 `vec.dat` 读。",
       "interpretation": "**结论与学生的前提相反，而这个反转正是这个实例的价值所在。**学生要的是「哈希表的内存占用」，把账算出来却发现：哈希表每行约 28 字节，而 ANN 索引里那份向量副本每行 552 字节——是哈希表的 20 倍；而且 `row_id` 在本引擎中**始终稠密**，所以根本不需要哈希表：稠密数组按 `row_id` 直接下标，每行 8 字节，比哈希表还省 3.5 倍。于是同一个问题的答案，因为先算了账而完全不同：从「把哈希表换小」变成「让 ANN 索引不再持有向量副本」。**同一套推理随后被迁移到另一个场景**：两百万行时内存撞上 2 GiB 限额，第一反应也是「实现占内存太多」，于是去看缓冲池与索引——同样是往错的方向优化。**「内存不够」和「谁在占内存」是两个问题**，这个区分在两个相隔很远的场景里各用了一次。",
       "student_evidence": {
@@ -650,8 +650,8 @@
       "dimension": "问题理解与自主拆解",
       "hypothesis_author": "student",
       "hypothesis": "题包还没有发布、完整语法与错误码只能靠文档反推时，真正该做的不是等，而是先把不依赖题包的部分做完，并把协议层做成可替换的，等题包到位再对齐。",
-      "command": "git fetch upstream 2026-competition-round2；git ls-tree upstream/2026-competition-round2；读 docs/06-加赛赛题-RAGStore.md 的交付与协议章节",
-      "result": "上游 commit `c842a368c3`（2026-11-04）删掉了 seekdb 全部源码（`src/`、`tools/`、`deps/` 等 300 个文件），只留下 CI 脚手架 + `.github/` 脚本 + **两个 0 字节占位文件：根目录 `Dockerfile` 和根目录 `conversation.json`**。\n分支目前只有 `.github/script/seekdb/mysqltest_for_seekdb.py`，**没有 RAGStore 的 stdin/stdout 题包**。",
+      "command": "git fetch upstream 2026-competition-round2；git ls-tree upstream/2026-competition-round2；读 docs/06-加赛赛题-MiniVectorDB.md 的交付与协议章节",
+      "result": "上游 commit `c842a368c3`（2026-11-04）删掉了 seekdb 全部源码（`src/`、`tools/`、`deps/` 等 300 个文件），只留下 CI 脚手架 + `.github/` 脚本 + **两个 0 字节占位文件：根目录 `Dockerfile` 和根目录 `conversation.json`**。\n分支目前只有 `.github/script/seekdb/mysqltest_for_seekdb.py`，**没有 MiniVectorDB 的 stdin/stdout 题包**。",
       "interpretation": "这个拆解改变的是**工作的排序**。两点由此确定：1. 交付槽位就是根目录那两个 0 字节文件——题目不是「补全一个已有实现」，而是**从零实现**；2. 题包缺席意味着协议细节只能反推，所以协议层必须做成可替换的，而不是把猜测硬编进引擎。这个决定后来被上游一次协议改版完全验证：引擎、存储、索引一行未动，只换掉了协议层。",
       "student_evidence": {
         "ref": "/experiments/4/student_evidence/excerpt",
@@ -669,7 +669,7 @@
       "dimension": "独立验证与质疑",
       "hypothesis_author": "student",
       "hypothesis": "题面提到 Docker，未必等于「本地验证必须用 Docker」。把题面里的 Docker 条款分成不可协商的交付形态与可协商的本地开发，才知道哪一部分真的没有选择。",
-      "command": "读 docs/06-加赛赛题-RAGStore.md 第 146 行与第 354 行，把其中所有与 Docker 相关的条款逐条分类",
+      "command": "读 docs/06-加赛赛题-MiniVectorDB.md 第 146 行与第 354 行，把其中所有与 Docker 相关的条款逐条分类",
       "result": "第 146 行：「开发语言和本地操作系统不限，正式运行环境统一为 Linux x86_64 容器。选手提交 Dockerfile，由平台构建并锁定镜像；正式执行时禁止联网，依赖须在构建阶段安装完成并锁定版本。」\n第 354 行：「**Dockerfile**：能够从提交的源码构建并启动评测容器。」",
       "interpretation": "结论是两分法：**① 不可协商**——评测方只会用提交的 Dockerfile 构建镜像再锁镜像跑用例，没有「非 Docker 提交路径」；源码、Dockerfile 与 `conversation.json` 还必须同一个 commit。**② 可协商**——开发语言与本地 OS 不限，所以本地写 Rust、编译成二进制、直接用管道喂 SQL 来测，**完全合法**。分清这两类的价值在于：**本地不必被 Docker 环境卡住**，而交付形态一步都不让。",
       "student_evidence": {
@@ -707,8 +707,8 @@
       "dimension": "技术理解与迁移",
       "hypothesis_author": "student",
       "hypothesis": "唯一得分的版本没有内存 OOM，而之后的版本有 —— 如果这个缺陷是新增的优化带来的，那么优化方向本身就要改，改成在内存限额下也成立的写法。",
-      "command": "git show ae6514687:ragstore/src/vector/index.rs；git ls-tree ae6514687 ragstore/src/vector/；git show ae6514687:ragstore/src/engine.rs | grep -n has_marker",
-      "result": "得分版本 `ae6514687` 的 `ragstore/src/vector/index.rs`\n67:pub fn build_index(\n74:    let rows = collect_indexable_rows(store, pk_index, vector_index)?;\n和当前版本一模一样的全量物化。\n而且 `engine.rs` 里启动时调用 `rebuild_vector_indexes()` → `build_index` → `collect_indexable_rows`，链路完全一致。\n得分版本压根没有倒排索引（`vector/` 目录下只有 `ann.rs` / `dist.rs` / `exact.rs` / `index.rs` / `mod.rs`，**没有 `inverted.rs`**）",
+      "command": "git show ae6514687:minivectordb/src/vector/index.rs；git ls-tree ae6514687 minivectordb/src/vector/；git show ae6514687:minivectordb/src/engine.rs | grep -n has_marker",
+      "result": "得分版本 `ae6514687` 的 `minivectordb/src/vector/index.rs`\n67:pub fn build_index(\n74:    let rows = collect_indexable_rows(store, pk_index, vector_index)?;\n和当前版本一模一样的全量物化。\n而且 `engine.rs` 里启动时调用 `rebuild_vector_indexes()` → `build_index` → `collect_indexable_rows`，链路完全一致。\n得分版本压根没有倒排索引（`vector/` 目录下只有 `ann.rs` / `dist.rs` / `exact.rs` / `index.rs` / `mod.rs`，**没有 `inverted.rs`**）",
       "interpretation": "**结论与前提相反，而这个反转正是这个实例的价值所在。**学生问「是不是我们新加的优化导致的问题」，把两个 commit 并排读完后答案是：**得分版本有完全相同的缺陷**。差别只在两处，而这两处决定了「为什么当时没炸」：1. 得分版本**没有倒排索引**，启动时不会无条件读全表的标量列；2. 得分版本的向量索引重建是**有条件的**（`has_marker` 检查 `index.dat`）。所以这不是新优化制造的缺陷，而是新优化引入了**第二个内存源**，两个内存源叠加之后才越过 2 GiB 的阈值。这直接决定了修法：既然是「叠加后才越界」，要修的就是**每一个内存源**。",
       "student_evidence": {
         "ref": "/experiments/7/student_evidence/excerpt",
@@ -764,7 +764,7 @@
       "dimension": "独立验证与质疑",
       "hypothesis_author": "student",
       "hypothesis": "`database exited before response` 只是现象，不是原因；两次提测都是同一句话，说明有同一个稳定的成因，而它不在源码里 —— 要回到上游的基准和要求文档去查。",
-      "command": "git diff ae6514687970ab74c0bec648d1e47bb0b4df41dc a868b06fa19189395024239d336fdc4ad3d77f48 -- ragstore/src; 阅读上游 STDIO_PROTOCOL.md 与 protocol_check/",
+      "command": "git diff ae6514687970ab74c0bec648d1e47bb0b4df41dc a868b06fa19189395024239d336fdc4ad3d77f48 -- minivectordb/src; 阅读上游 STDIO_PROTOCOL.md 与 protocol_check/",
       "result": "第一次提测：MySQL 正式用例：通过；性能原始分 1829.577226\n第二次提测：MySQL 正式用例:未通过；原因：database exited before response × 1。未执行性能评测。\n两次的错误签名完全相同",
       "interpretation": "学生在把失败贴回来的同时给出了三条要求，每一条都是「不要接受现象」：「测试还是没有通过」——不是重试，是找原因；「查看上游仓库的基准和要求文档」——去官方口径核对；「注意测试的时候有隐藏用例」——意识到公开用例全过不等于正式用例会过。他把同一个错误签名的两次失败**当作一个稳定成因的证据**，而不是两次偶然。这一步是本轮能一路查到内存超限的前提：如果是 panic，符号会是随机的；而一个稳定的签名说明有确定的东西被触发。",
       "student_evidence": {
@@ -783,7 +783,7 @@
       "dimension": "实验与反馈迭代",
       "hypothesis_author": "student",
       "hypothesis": "得分版本和失败版本之间只有一处改动是有嫌疑的；把两个 commit 并排 diff，就能把「是我的优化引入了问题吗」这个问题变成可以逐行回答的问题。",
-      "command": "git diff --stat ae6514687970ab74c0bec648d1e47bb0b4df41dc 5d9d2a967833831138f9962dbb8dff83c9c8b948 -- ragstore/src; grep -n 'collect_indexable_rows' ragstore/src/vector/index.rs",
+      "command": "git diff --stat ae6514687970ab74c0bec648d1e47bb0b4df41dc 5d9d2a967833831138f9962dbb8dff83c9c8b948 -- minivectordb/src; grep -n 'collect_indexable_rows' minivectordb/src/vector/index.rs",
       "result": "得分版本与失败版本的 src 差异：16 个文件，+2614 −368\n得分版本的 index.rs:74 同样是 collect_indexable_rows(store, pk_index, vector_index)\n得分版本没有倒排索引，向量索引的重建是有条件的",
       "interpretation": "这一步把一个含糊的怀疑变成了一个可回答的问题，而且答案是反直觉的：**全量物化不是那几次优化引入的**，得分版本里就有同一条路径。差别在别处：得分版本没有倒排索引，向量索引的重建是「有 marker 才重建」。新增的倒排索引在启动时**无条件**重建，于是第二个随行数增长的内存源叠了上来，两个因素相加才越过 2 GiB 的门槛——所以前两轮修 panic 和 catalog 都没命中。学生在 prompt 里把「并排 diff」和「对照官方文档检查」并列为要求，正好对应「定位是谁引入的」和「定位什么必须满足」。",
       "student_evidence": {
@@ -802,7 +802,7 @@
       "dimension": "实验与反馈迭代",
       "hypothesis_author": "student",
       "hypothesis": "准入过了、性能分拿到了，唯独 Agent Prompt 一项被判无效；反馈给的是三个可能的原因，那就应该按这三个原因逐个去查，而不是笼统地猜「材料不合格」。",
-      "command": "阅读 docs/06-加赛赛题-RAGStore.md 的提交格式一节；对照 agent/conversation.json 的顶层字段",
+      "command": "阅读 docs/06-加赛赛题-MiniVectorDB.md 的提交格式一节；对照 agent/conversation.json 的顶层字段",
       "result": "反馈给了三个可能原因：\n- 「超出平台 0–100 范围」← 我们的 schema 写的是 `v3-unbounded`\n- 「缺少材料摘要」\n- 「Prompt 结果无效、待复核」\n查下来三个原因**同时成立**：schema 越界、顶层没有 material_summary、全部实验的 dimension 与 hypothesis_author 都是 null。",
       "interpretation": "这一轮是**反馈驱动的定位**：平台给了三个可能原因，查下来三个**同时成立**，而且第三个最致命——全部实验的 `dimension` 与 `hypothesis_author` 都是 null，于是五个维度全部无证据可评，这一项只能被判为「待复核」，40 分的 Agent Prompt 项直接不参与排名。值得注意的是学生这一轮做的事只有一件：**把平台的话原样贴回来**。他既没有猜测原因，也没有替平台下结论，而是把那句「超出平台 0–100 范围或缺少材料摘要」当作一条待查的线索交给下一步。对比后面两轮准入失败他也是同样处理，这是一个稳定的方法。",
       "student_evidence": {
@@ -878,7 +878,7 @@
       "dimension": "独立验证与质疑",
       "hypothesis_author": "student",
       "hypothesis": "此前所有对超时的定位都是用自研脚本做的，平台的判题器从来没有被复现过；所以「本地能过」不足以说明「平台会过」。把公开用例 `vector_index_maintenance` 放大（同样的 `--mode ann`、同样的 `--restart`、同样的过滤，只是数据变大），交给**官方的 run.py + 官方的 _transport.py + 官方的 config.json** 跑，平台的报错就应当能被逐字复现。",
-      "command": "tools/build_amplified_case.py --binary <binary> --rows 400000 --text 12000 --dim 128 --batch 2000 --out /tmp/amp_timeout\npython3 /tmp/official/protocol_check/run.py --image ragstore:amplified --package /tmp/amp_timeout --case vector_index_maintenance_amplified --output /tmp/ampto_res",
+      "command": "tools/build_amplified_case.py --binary <binary> --rows 400000 --text 12000 --dim 128 --batch 2000 --out /tmp/amp_timeout\npython3 /tmp/official/protocol_check/run.py --image minivectordb:amplified --package /tmp/amp_timeout --case vector_index_maintenance_amplified --output /tmp/ampto_res",
       "result": "修复前：{\"id\": \"vector_index_maintenance_amplified\", \"status\": \"TIMEOUT\", \"message\": \"JSON response timeout\", \"duration_ms\": 168010}\n修复后：{\"id\": \"vector_index_maintenance_amplified\", \"status\": \"PASS\", \"message\": \"\", \"duration_ms\": 108298}",
       "interpretation": "这一条把「平台说超时」变成了一句可以自己验证的话。**第一，它质疑的是自己之前的全部定位工作**：此前所有测量都出自自研脚本，判题器一次都没有被跑过，于是「本地不超时」和「平台会过」之间没有任何证据链。**第二，平台本身是被完整复用的**：判题器的 run.py、_transport.py、config.json（60s 语句预算、120s 启动预算、600s 整例预算）都是官方的那一份，所以超时抛在什么地方、抛的是什么字符串，都不是仿造的。**第三，这个 case 检验的是正确性而不只是速度**：期望答案是用**精确路径**算出来的，不是手写的常量，所以近似路径的答案必须自己对得上。**第四，同一个 case、同一个判题器，修复前 TIMEOUT、修复后 PASS**——这是本轮唯一的、端到端的、不含自研成分的验收。",
       "student_evidence": {
@@ -897,7 +897,7 @@
       "dimension": "取舍与反思",
       "hypothesis_author": "student",
       "hypothesis": "拿到根因方向之后，最像样的两个修法是「把块调大」和「把缓存调大」，两者都是只动一个常量的单变量实验。如果有一个有效，修复就只需要改一个常量加一次回归；如果两个都无效，那就说明瓶颈不在常量上，而在算法的性质上。",
-      "command": "# 实验一：只改一个常量\nsed -i 's/vector_block_rows: 1024,/vector_block_rows: 4096,/' ragstore/src/config.rs\n# 实验二：只改一行\n# let scalar_mb = SCALAR_POOL_MB_OVERRIDE.unwrap_or(scalar_mb);  // 64",
+      "command": "# 实验一：只改一个常量\nsed -i 's/vector_block_rows: 1024,/vector_block_rows: 4096,/' minivectordb/src/config.rs\n# 实验二：只改一行\n# let scalar_mb = SCALAR_POOL_MB_OVERRIDE.unwrap_or(scalar_mb);  // 64",
       "result": "基线（1024 块 / 16MB 池）   4M 行 ANN 过滤  60.03 s   1.6M 行 34.13 s\n实验一（4096 块）            4M 行             60.04 s   1.6M 行 39.85 s（+17%，更慢）\n实验二（scalar 池 64MB）     4M 行             60.06 s\n修复后（走精确路径）          4M 行              3.913 s\n\n400k/1024 : 391 块 × 1.57MB，池装 10 块，28 遍扫描，读 17.2 GB\n400k/4096 :  98 块 × 6.28MB，池装  2 块，28 遍扫描，读 17.2 GB\n4M/1024   : 3907 块 × 1.57MB，池装 10 块，30 遍扫描，读 183.9 GB\n4M/4096   :  977 块 × 6.28MB，池装  2 块，30 遍扫描，读 183.9 GB",
       "interpretation": "两个实验都做了，**两个都无效**，而且无效的方式是可以算出来的。看算术表的最后一列：**每一对的最后一列相同**。决定耗时的是「对全表扫了几遍」，而遍数 = 近似扫描访问的 cell 数，**与块大小和池大小都无关**——块变大只是每次读到更多字节、缓存少装几块；池变大只是多装几块，而表本身是它的几十倍。实验一在 1.6M 行反而慢 17%，同一张表推出：块大 4 倍而池只装得下 2 块，miss 更多，每次 miss 要读 6.28MB。**教训不是「调参没用」，而是「当两个最廉价的修法都无效时，说明瓶颈不在常量上，而在算法的性质上」。**而找到算法性质靠的不是再猜一个常量，是给「扫描」这件事本身加上计数器（cells visited / pruned / best_len / kth_dist / rows visited / would_prune），一次测出机制：过滤把第 K 好的距离从 99.64 抬到 393.20（3.95 倍），而所有 cell 的半径最大只有 327.76、最佳下界是 -202.13——**没有任何 cell 能靠自己的半径被排除**，64 个 cell 里有 28 个活下来，每个都触及全表。机制测出来之后修法就不再是猜的：unlimited 模式下近似搜索按定义就是精确搜索，所以改走精确路径，60.03 s 变成 3.913 s。",
       "student_evidence": {
@@ -916,7 +916,7 @@
       "dimension": "独立验证与质疑",
       "hypothesis_author": "student",
       "hypothesis": "上一轮全部结论都建立在一个自造的 amplified case 上，而这个 case 的查询带了 `WHERE category = 'c3'`——**官方公开用例 `vector_index_maintenance` 里一条 WHERE 都没有**。于是上一轮测的是「近似 + 过滤」这条路径，而平台判的是「近似、不过滤」那条路径，两条路径的代价完全不同。\n所以要按**官方文档的 timeout 报错口径**重新问一遍：哪些优化会导致超时？还有哪些怀疑的路径？并且要把官方的用例逐字抄下来、只改数据量，再交给官方的判题器去跑，而不是继续调一个自己造的形状。",
-      "command": "python3 tools/build_amplified_case.py --binary <binary> --rows 800000 --text 1000 --dim 128 --batch 2000 --out /tmp/amp_noinv\npython3 /tmp/official/protocol_check/run.py --image ragstore:noinv --package /tmp/amp_noinv --case vector_index_maintenance_amplified --output /tmp/ampnoinv_res",
+      "command": "python3 tools/build_amplified_case.py --binary <binary> --rows 800000 --text 1000 --dim 128 --batch 2000 --out /tmp/amp_noinv\npython3 /tmp/official/protocol_check/run.py --image minivectordb:noinv --package /tmp/amp_noinv --case vector_index_maintenance_amplified --output /tmp/ampnoinv_res",
       "result": "官方的 vector_index_maintenance.test 全文里，三条向量查询是 `ORDER BY distance LIMIT 10`，没有 WHERE；\n只有 UPDATE 与 DELETE 两条写操作带 WHERE。\n忠实形状（不过滤）800k 行：{\"status\": \"PASS\", \"duration_ms\": 36865}\n带过滤的旧形状 800k 行：{\"status\": \"PASS\", \"duration_ms\": 37677}",
       "interpretation": "这一条把**「我们测的形状」和「平台判的形状」分开了**，而这两者此前一直被当成同一个东西。**第一，它质疑的是上一轮自己的实验设计**：放大用例里那句 `WHERE category = 'c3'` 是我们自己加的，官方用例里没有；于是上一轮量到的「过滤让剪枝失效」只对一条不存在的路径成立。**第二，它不是靠嘴说的，是靠判题器说的**：同样的数据、同样的判题器，只是把 WHERE 去掉，忠实形状 36865 ms、带过滤形状 37677 ms——**去掉 WHERE 反而更快**，说明在这个规模上过滤根本没帮上忙。**第三，这条质疑直接改变了下一步**：既然官方的形状里没有过滤，倒排索引在**被判的那个用例上收益为零**，而它的写入代价却要每一条用例都付——「去掉它」这个决定就是从这里长出来的。",
       "student_evidence": {
@@ -954,7 +954,7 @@
       "dimension": "取舍与反思",
       "hypothesis_author": "student",
       "hypothesis": "倒排索引是 a509458a5 之后加的**可选加速结构**，题面没有要求它，得分版本 ae6514687 里 `inverted` 出现 0 次。它现在同时收三笔税：写入时每插一行就遍历字典里所有 list 做 binary_search；启动时 7.714 s 的全表重建（而向量索引重建只要 0.613 s，慢 12 倍）；查询时给出候选集。\n它唯一买的是「带过滤的查询少测很多行」，而**官方的用例里一条 WHERE 都没有**——所以这笔交易是：**税是确定的，收益是有条件的，而条件不成立。**\n那么问题就变成两问：**舍弃倒排索引，其他的优化是不是就无效了？**（不是：ANN 那条修复解决的是查询，倒排索引解决的是写入，两者在不同的阶段上。）以及**通过门槛比什么都重要**——所以本轮唯一的改动是把它去掉，不做别的优化。",
-      "command": "# 四处一起改，漏一处就会有静默的错误答案\n# engine.rs: inverted_insert / inverted_remove 清空成 return；删掉 rebuild_inverted_indexes 及其在 recover() 里的调用\n# query.rs:  两处 candidate_rows 直接设为 None\npython3 tools/check_answer_equivalence.py --old /tmp/mvdb_with_inv --new /tmp/mvdb_no_inv；python3 /tmp/official/protocol_check/run.py --image ragstore:noinv --package /tmp/amp_noinv --case vector_index_maintenance_amplified --output /tmp/ampnoinv_res",
+      "command": "# 四处一起改，漏一处就会有静默的错误答案\n# engine.rs: inverted_insert / inverted_remove 清空成 return；删掉 rebuild_inverted_indexes 及其在 recover() 里的调用\n# query.rs:  两处 candidate_rows 直接设为 None\npython3 tools/check_answer_equivalence.py --old /tmp/mvdb_with_inv --new /tmp/mvdb_no_inv；python3 /tmp/official/protocol_check/run.py --image minivectordb:noinv --package /tmp/amp_noinv --case vector_index_maintenance_amplified --output /tmp/ampnoinv_res",
       "result": "闸门第一次跑就抓到一处**静默的错误答案**：\n  DIFFERENT  SELECT id FROM t WHERE cat = 'z';\n    old: {\"rows\":[[1]]}\n    new: {\"rows\":[]}\n  100 of 102 answers are identical\n根因：全扫描在**提交前的旧标量值**上判断过滤，而倒排索引路径用 staged_rows_matching 显式补上了事务的暂存更新。\n修好之后：102 of 102 answers are identical\n写入 224.1 s → 217.4 s（中位数），重启握手 10.065 s → 5.857 s，整例 245.8 s → 236.8 s（600 s 的 39%）\n判题器 800k 忠实形状：PASS，37677 ms → 36865 ms",
       "interpretation": "这一条的价值**不在于那 3%，而在于它抓出来的东西**。**第一，取舍本身是对的，但收益被自己高估了**：去掉倒排索引只把写入从 224.1 s 降到 217.4 s（3.3%），而不是预期的「降到 150 s 以下」。原因写在代码里：`remove` 遍历字典时**找到就 break**，八个分类平均只走四个 list，不是 MAX_DISTINCT=1024 个——**那个 O(行数×列数×1024) 是上界，被当成了实测值。**如实写下来，比报一个好看的数字有用。**第二，取舍的依据比取舍本身更值钱**：「税是确定的、收益是有条件的、条件在这条用例上不成立」，这个判断是站在**官方的用例形状**上做的，而形状是先被逐字核对过的（e-56）。**第三，也是最要紧的：闸门抓到了一处静默的错误答案。**去掉加速结构之后，一条带过滤的查询答了空集——**不崩溃、不报错，只是答案错了**。根因是倒排索引顺手替扫描补上了一个洞：事务里 UPDATE 过的行，在块里还带着旧值，而扫描拿旧值去判断过滤。于是倒排索引不只是加速器，**它还是那处一致性的唯一承担者**。**第四，这条给了「闸门」一个之前没有的理由**：**去掉加速结构可能顺手去掉它顺带修的 bug**，而这种 bug 是静默的，所以闸门必须逐条比对答案，而不能只比对时间。",
       "student_evidence": {
@@ -972,7 +972,7 @@
       "name": "同一份代码在两台机器上一次通过、一次超时：核数是第一个影响因素",
       "dimension": "独立验证与质疑",
       "hypothesis_author": "student",
-      "hypothesis": "得分版本 `d0eed67d3` 通过了准入，之后两次**只改了材料**的提交却超时了。两次的引擎代码与得分版本**逐字节相同**，而材料是在准入之后才被读的，所以材料不可能让准入失败——**那么差异只可能在跑它的那台机器上**。代码里没有任何线程（`ragstore/src` 里没有 `rayon`、没有 `thread::spawn`、没有 `available_parallelism`），所以核数唯一的作用是**把判题器自己的驱动进程从服务器所在的那个核上挪走**。如果这条成立，那么**核数就是一个一阶因素**，而且它决定一个用例能不能过门槛。",
+      "hypothesis": "得分版本 `d0eed67d3` 通过了准入，之后两次**只改了材料**的提交却超时了。两次的引擎代码与得分版本**逐字节相同**，而材料是在准入之后才被读的，所以材料不可能让准入失败——**那么差异只可能在跑它的那台机器上**。代码里没有任何线程（`minivectordb/src` 里没有 `rayon`、没有 `thread::spawn`、没有 `available_parallelism`），所以核数唯一的作用是**把判题器自己的驱动进程从服务器所在的那个核上挪走**。如果这条成立，那么**核数就是一个一阶因素**，而且它决定一个用例能不能过门槛。",
       "command": "# 同一份二进制，判题沙箱的真实限制，只改核数\npython3 tools/measure_case_budget.py --binary <binary> \\\n  --rows 4000000 --text 1000 --dim 128 --batch 100 --cpus 1 --output /tmp/budget_4M_cpu1.json\npython3 tools/measure_case_budget.py --binary <binary> \\\n  --rows 4000000 --text 1000 --dim 128 --batch 100 --cpus 2 --output /tmp/budget_4M_cpu2.json\n# 本地复现准入：20 组官方公开用例\npython3 tools/run_public_cases.py",
       "result": "两个核：写 230.18 s，整例 248.419 s（600 s 的 41.4%）\n一个核：写 282.901 s，整例 301.181 s（600 s 的 50.2%）\n**一个核比两个核，写入慢 22.9%，整例慢 21.2%**\n官方公开用例：all checks passed（20/20）\n按写入的线性外推：两个核约 1000 万行，一个核约 820 万行，**两台机器之间差 180 万行**",
       "interpretation": "这一条回答的是**平台那句报错到底在说什么**，而且答案是反的。**第一，怀疑的方向被自己的数据否掉了**：材料不可能让准入失败——题面 §3.4 写明材料是准入**之后**才被评测 Agent 读的，§2.4 也写明「Agent prompt 材料无效仅将该项记为 0，仍可获得有效的性能得分」。所以两次超时的差异只可能在**执行环境**里。**第二，核数确实是一阶因素，而且是被实测出来的**：同一份二进制，同样的 400 万行、同样的判题预算，写入在两个核上是 230.18 s、在一个核上是 282.901 s，差 22.9%。**第三，最要紧的一条是这条差异换算到门槛上的含义**：因为 `Session.remaining()` 取「语句预算」与「整例剩余」的较小者，整例耗尽 600 s 时抛出的**正是同一个 `TimeoutError(\"JSON response timeout\")`**，和单条语句超了自己的 60 秒抛出的完全一样。而写入占整例的 91% 且随行数线性增长，所以**临界行数在两个核上差了 180 万行**。一个写 400 万行的用例，在两核的机器上用掉 41% 的预算，在一核的机器上用掉 50%——**离门槛的余量取决于平台给几核，而平台从不公布这一点**。**第四，这条也解释了为什么「只改材料」会失败**：失败的不是材料，是那一次跑的机器。",
@@ -992,8 +992,8 @@
       "dimension": "取舍与反思",
       "hypothesis_author": "student",
       "hypothesis": "评审是**三次独立的**，而且三次对「材料类型」的判断只要不一致，状态就落到 `NEEDS_REVIEW`、原始分为 `null`（题面 §3.4.4）。所以真正该做的不是「把材料写得更好看」，而是**让三次评审面对的是同一份事实**：作者归属准确、证据齐全、材料自包含、与被提交的代码一致。而「货不对版」这个说法，在评审眼里的形态**不是代码与材料对不上，而是材料声称的作者与记录里的作者对不上**。",
-      "command": "python3 tools/check_conversation_json.py conversation.json\npython3 tools/check_conversation_against_record.py conversation.json\npython3 tools/check_prompt_authorship.py\ngit diff d0eed67d3 dc3d72ed6 --stat -- ragstore/ Dockerfile\ngit ls-tree d0eed67d3 ragstore/ && git ls-tree dc3d72ed6 ragstore/",
-      "result": "三个校验器全绿：\n  ok    the material is valid\n  ok    all 58 excerpts are in the development record\n  ok    every prompt is attributed as the record shows it\n`ragstore/` 的 tree 哈希：`d0eed67d3` 与 `dc3d72ed6` **完全相同**；`Dockerfile` 的 blob 相同；`Cargo.toml` / `Cargo.lock` 相同。\n两个 commit 之间改动的文件只有 7 个，全是材料与工具：`conversation.json`（两份）、`agent/DIAGNOSIS-agent-prompt.md`、`agent/archive/unscored-instances.json`、`tools/` 下的三个脚本。\n而 `Dockerfile` 只 `COPY ragstore/Cargo.toml` 与 `ragstore/src`——**根本不读 `conversation.json`，也不读 `tools/`**，所以镜像的输入与得分版本逐字节相同。\n材料自检：21 个计分实例全部同时有 `student_evidence` 与 `result_evidence`；摘录全部 ≤ 240 字符；无重复引文；无同片段充数；五个维度各有 ≥2 个实例。",
+      "command": "python3 tools/check_conversation_json.py conversation.json\npython3 tools/check_conversation_against_record.py conversation.json\npython3 tools/check_prompt_authorship.py\ngit diff d0eed67d3 dc3d72ed6 --stat -- minivectordb/ Dockerfile\ngit ls-tree d0eed67d3 minivectordb/ && git ls-tree dc3d72ed6 minivectordb/",
+      "result": "三个校验器全绿：\n  ok    the material is valid\n  ok    all 58 excerpts are in the development record\n  ok    every prompt is attributed as the record shows it\n`minivectordb/` 的 tree 哈希：`d0eed67d3` 与 `dc3d72ed6` **完全相同**；`Dockerfile` 的 blob 相同；`Cargo.toml` / `Cargo.lock` 相同。\n两个 commit 之间改动的文件只有 7 个，全是材料与工具：`conversation.json`（两份）、`agent/DIAGNOSIS-agent-prompt.md`、`agent/archive/unscored-instances.json`、`tools/` 下的三个脚本。\n而 `Dockerfile` 只 `COPY minivectordb/Cargo.toml` 与 `minivectordb/src`——**根本不读 `conversation.json`，也不读 `tools/`**，所以镜像的输入与得分版本逐字节相同。\n材料自检：21 个计分实例全部同时有 `student_evidence` 与 `result_evidence`；摘录全部 ≤ 240 字符；无重复引文；无同片段充数；五个维度各有 ≥2 个实例。",
       "interpretation": "这一条是**把评审规则当成设计约束**的一步。**第一，先把因果关系钉死**：题面的顺序是硬的——准入先过，材料才被读；所以「材料让准入超时」这条路径不存在，剩下的解释只有平台侧的环境波动（e-59 把它测成了核数）。这个顺序一旦想清楚，剩下的动作就只剩一件：把材料本身做到挑不出毛病。**第二，「货不对版」有确定的所指**：题面 §3.4.1 说「只给学生自身有证据支持的贡献计分」——所以材料把 **Agent 起草的提示词标成学生写的**，就是一处「材料声称的作者与记录里的作者对不上」。评审抽查到一条，整个材料的归属就要被重新怀疑，而三次评审只要有一次这样判，§3.4.4 的「三轮对材料类型的判断不一致」就成立，原始分变 `null`。**第三，取舍变得很清楚**：宁可少几个实例，也不能让一个实例建立在「Agent 起草、学生转发」的提示词上。那一轮把代笔的提示词如实标为 `agent_draft`、把建立在它们之上的实例移到归档文件（结果原文一字未改），换来的不是更长的材料，而是**更可信的材料**。**第四，最要紧的一课**：规则说「材料截断、缺失或完整性无法确认时，不武断判 0，应标记证据不足并复核」——**「证据不足」不是低分，是 `null`**，而 `null` 不参与排名。所以被截断的提示词必须**在材料内部**说明它被截断了、剩下的是什么（`cut_summary`），而不是留一句指向本材料之外的指针。",
       "student_evidence": {
         "ref": "/experiments/22/student_evidence/excerpt",
@@ -1069,13 +1069,13 @@
       "近似模式默认遍历全部 cell，因此结果是精确的；有限的 `--ann-nprobe` 才会给出真正近似的答案，此时召回率依赖数据分布。",
       "向量索引不落盘，启动时重建。题面允许这样做，但重建成本会计入恢复时间。",
       "事务语义的覆盖依赖 `protocol_check` 已发布的用例；更细的隔离级别（READ COMMITTED / REPEATABLE READ / SERIALIZABLE）与显式锁语义尚未实现，按约定返回错误。",
-      "检查点阈值默认 64 MiB，可用 `RAGSTORE_CHECKPOINT_MB` 调整。已验证的边界是 200 万行 128 维（数据目录 1104 MiB、峰值内存 1557 MiB，均在 2 GiB 限额内）；再大一档未实测。",
+      "检查点阈值默认 64 MiB，可用 `MINIVECDB_CHECKPOINT_MB` 调整。已验证的边界是 200 万行 128 维（数据目录 1104 MiB、峰值内存 1557 MiB，均在 2 GiB 限额内）；再大一档未实测。",
       "SQL 语法支持严格限于题面 §2.1 与 §2.2 列出的子集（CREATE TABLE / INSERT / SELECT / UPDATE / DELETE / L2_DISTANCE / BEGIN / COMMIT / ROLLBACK / CREATE VECTOR INDEX）。COUNT、DISTINCT、GROUP BY、JOIN、IN、BETWEEN、LIKE、IS NULL、OFFSET 等未实现，按约定返回错误。\n这一边界有明文依据而非推断：题面 §2.1 写着「本题不要求 NULL、JOIN、聚合、子查询、ALTER TABLE、外键、嵌套事务或主键更新。不支持的语句须返回约定错误」，且已逐条实测这 8 类语句确实返回了约定错误、题面「必须支持」的 17 项全部成功。",
       "错误码的冻结映射尚未公布。官方 `protocol_check/config.json` 的 `error_codes` 是空对象，题包 README 写着「正式映射以题包为准」；公开用例只用到 `duplicate_key` / `dimension_mismatch` / `unsupported_sql` 三个名字。本实现覆盖 9 个语义名（这三个之外还有 `syntax_error` / `no_such_table` / `no_such_column` / `data_error` / `value_out_of_range` / `transaction_state`），但若正式映射使用了不同的名字，仍有失配的可能——这是当前无法通过本地验证消除的不确定性。"
     ]
   },
   "limitations": {
-    "scope": "本材料覆盖 RAGStore（加赛赛题一）从空分支到可提测状态的开发过程，时间跨度 2026-11-09 至 2026-11-15。所有 prompt 都是会话记录里真实出现过的输入，其中一部分的文字是 Agent 起草、学生转发的，这部分在 `user_prompts[].source` 上标为 `agent_draft`；所有实验命令均为真实执行过的命令，所有 result 均为真实观察到的输出。材料自包含：评审只读本文件即可核对。",
+    "scope": "本材料覆盖 MiniVectorDB（加赛赛题一）从空分支到可提测状态的开发过程，时间跨度 2026-11-09 至 2026-11-15。所有 prompt 都是会话记录里真实出现过的输入，其中一部分的文字是 Agent 起草、学生转发的，这部分在 `user_prompts[].source` 上标为 `agent_draft`；所有实验命令均为真实执行过的命令，所有 result 均为真实观察到的输出。材料自包含：评审只读本文件即可核对。",
     "synthetic": false,
     "authorship": "每一段文字的作者都标在它自己的字段上。\n\n`user_prompts`：`content` 逐字来自会话记录，未作删改。`source` 标明这段文字是谁写的：\n+ `student`：学生本人写的。\n+ `agent_draft`：**文字是 Agent 起草的，学生只是把它转发到工作会话**。监督会话里学生说「给出提示词」，Agent 回一段，学生把那段原样贴进工作会话——学生按了回车，但字是 Agent 写的。题面 §3.4.1 说「只给学生自身有证据支持的贡献计分」，所以这一类 prompt **不被任何实例当作学生证据引用**；`author_note` 写明它是哪一次转发。`note` 是对这段输入的读法，不是学生的原话。过长的指令按行截断，被截掉的部分由同一行的 `cut_summary` 在本材料内说明，因此评审只读本文件即可知道这条 prompt 要求了什么。\n\n`conversations`：每个 turn 都有 `role`（`student` 或 `agent`）与 `source`（指向记录里的第几轮）。学生的 turn 是原话，Agent 的 turn 是该轮回答里与判断相关的**单个**消息中的一段。\n\n`experiments`：每个实例都有 `hypothesis_author`（`student` 或 `agent`），指明这个假设是谁提出的。标为 `student` 的，`student_evidence` 指向提出该假设的学生原话（同时给出该 prompt 在本文件中的位置 `prompt_pointer`）；标为 `agent` 的，`student_evidence` 为 null——因为该实例没有以学生的发言为起点，把它硬挂到某句学生的话上会是编造。\n\n**计分实例全部由学生提出假设，且每一条都有学生的原话。** 假设由 Agent 提出的实例按题面 §3.4.1 本就不计分，所以它们连同实测结果移到了归档文件 `agent/archive/unscored-instances.json`——结果是关于这个项目的事实，删掉会丢数据，但它们不构成学生的证据，留在计分列表里只会稀释信号。\n\n五个维度各自都有学生提出的实例，以免某个维度因证据不足而被判为 null。",
     "missing": [

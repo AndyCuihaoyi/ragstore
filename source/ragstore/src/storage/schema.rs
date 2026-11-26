@@ -232,7 +232,7 @@ mod tests {
 
     #[test]
     fn round_trips_the_catalog() {
-        let dir = std::env::temp_dir().join(format!("mvdb-catalog-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("ragstore-catalog-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let path = dir.join(CATALOG_FILE);
         write(&path, &[(7, sample())]).unwrap();
@@ -246,7 +246,7 @@ mod tests {
 
     #[test]
     fn a_missing_catalog_is_empty() {
-        let dir = std::env::temp_dir().join(format!("mvdb-catalog-missing-{}", std::process::id()));
+        let dir = std::env::temp_dir().join(format!("ragstore-catalog-missing-{}", std::process::id()));
         std::fs::create_dir_all(&dir).unwrap();
         let read_back = read(&dir.join(CATALOG_FILE)).unwrap();
         assert!(read_back.is_empty());

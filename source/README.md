@@ -1,21 +1,5 @@
 # RAGStore
 
-> 面向检索增强生成（RAG）的轻量级向量存储引擎。
-> 参赛作品：第四届大学生信息存储技术竞赛 · 自由赛道。
-> 完整设计文档见压缩包根目录的《作品设计文档.docx》。
-
-RAGStore 是一个小而完整的向量数据库：在含向量列的表上提供 SQL 子集，
-并对该列提供精确与近似两种 TopK 检索。
-
-服务进程通过标准输入输出讲 **JSON Lines 协议**。
-它没有任何外部依赖，全部代码基于 Rust 标准库编写，因此可以在无网络的环境下构建。
-
-> 目录说明：`ragstore/` 为本 crate；`tools/` 为测试与性能测量脚本；
-> `docs/` 为设计与性能文档；`development-record/` 为开发过程存档，
-> 保留参赛赛题阶段的项目命名原样，不参与构建与评测。
-
-以下为源码级说明。
-
 A small vector database: a SQL subset over tables that hold a vector column,
 with an exact and an approximate TopK search over that column.
 
@@ -165,7 +149,7 @@ SELECT id, L2_DISTANCE(embedding, '[0.1,0.2,...]') AS distance
 ```
 
 The supported comparisons are `=`, `<>`, `<`, `<=`, `>`, `>=`, the boolean
-operators `AND` and `OR` with parentheses, `ORDER BY` with `ASC` and `DESC`,
+operators `AND` and `OR` (without parentheses), `ORDER BY` with `ASC` and `DESC`,
 and `LIMIT`. The ordering breaks a tie by the primary key, ascending.
 
 `L2_DISTANCE` over a vector column, ordered ascending and limited, is the
@@ -228,7 +212,7 @@ bash tools/killtest.sh                                       # the crash recover
 python3 tools/bench.py                                       # the performance measurement
 python3 tools/perf_compare.py --before A --after B           # the performance comparison
 python3 tools/check_time_budget.py --rows 4000000 --dim 128 --limit-mb 2048
-python3 tools/check_ann_nprobe_equivalence.py --broken /tmp/mvdb_broken
+python3 tools/check_ann_nprobe_equivalence.py --broken /tmp/ragstore_broken
 python3 tools/check_ann_recall.py
 ```
 

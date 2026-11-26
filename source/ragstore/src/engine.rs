@@ -1423,7 +1423,7 @@ mod tests {
     impl TempDir {
         fn new(tag: &str) -> TempDir {
             let mut path = std::env::temp_dir();
-            path.push(format!("mvdb-engine-test-{tag}-{}", std::process::id()));
+            path.push(format!("ragstore-engine-test-{tag}-{}", std::process::id()));
             let _ = std::fs::remove_dir_all(&path);
             std::fs::create_dir_all(&path).unwrap();
             TempDir(path)

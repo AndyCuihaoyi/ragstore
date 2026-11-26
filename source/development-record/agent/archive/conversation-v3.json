@@ -1,7 +1,7 @@
 {
   "schema": "agent-learning-evidence-v3-unbounded",
   "task": {
-    "name": "RAGStore",
+    "name": "MiniVectorDB",
     "competition": "2026 OceanBase Database Competition, extra round",
     "repository": "AndyCuihaoyi/seekdb-2026",
     "branch": "2026-competition-round2",
@@ -26,9 +26,9 @@
     {
       "id": "up-02",
       "time": "2026-11-09T12:11:00+08:00",
-      "content": "@docs/06-加赛赛题-RAGStore.md @docs/07-加赛算分规则.md 现在大赛增加了一轮加赛，相关的文档在这里；\n1.根据文档的加赛构建要求查看现在的环节是否能满足构建要求\n2.初步部署之后，根据得分要求，目标拿到满分要做哪些方面的优化\n3.如何逐步有规划地高效完成优化验证的步骤和规则，完成过程中需要哪些文档辅助\n4.全程由agent或者配合subagent完成，拟定完整计划",
+      "content": "@docs/06-加赛赛题-MiniVectorDB.md @docs/07-加赛算分规则.md 现在大赛增加了一轮加赛，相关的文档在这里；\n1.根据文档的加赛构建要求查看现在的环节是否能满足构建要求\n2.初步部署之后，根据得分要求，目标拿到满分要做哪些方面的优化\n3.如何逐步有规划地高效完成优化验证的步骤和规则，完成过程中需要哪些文档辅助\n4.全程由agent或者配合subagent完成，拟定完整计划",
       "source": "student",
-      "excerpt": "@docs/06-加赛赛题-RAGStore.md @docs/07-加赛算分规则.md 现在大赛增加了一轮加赛，相关的文档在这里；\n1.根据文档的加赛构建要求查看现在的环节是否能满足构建要求\n2.初步部署之后，根据得分要求，目标拿到满分要做哪些方面的优化\n3.如何逐步有规划地高效完成优化验证的步骤和规则，完成过程中需要哪些文档辅助\n4.全程由agent或者配合subagent完成，拟定完",
+      "excerpt": "@docs/06-加赛赛题-MiniVectorDB.md @docs/07-加赛算分规则.md 现在大赛增加了一轮加赛，相关的文档在这里；\n1.根据文档的加赛构建要求查看现在的环节是否能满足构建要求\n2.初步部署之后，根据得分要求，目标拿到满分要做哪些方面的优化\n3.如何逐步有规划地高效完成优化验证的步骤和规则，完成过程中需要哪些文档辅助\n4.全程由agent或者配合subagent完成，拟定完",
       "note": "第一条要求：先核对交付形态，再按得分倒推该做什么。"
     },
     {
@@ -89,17 +89,17 @@
     {
       "id": "up-10",
       "time": "2026-11-10T14:23:00+08:00",
-      "content": "RAGStore · P0 计划（不依赖官方题包）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
+      "content": "MiniVectorDB · P0 计划（不依赖官方题包）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
       "source": "student",
-      "excerpt": "RAGStore · P0 计划（不依赖官方题包）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create",
+      "excerpt": "MiniVectorDB · P0 计划（不依赖官方题包）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create",
       "note": "执行一份已经写好的计划，本身不含新的判断。"
     },
     {
       "id": "up-11",
       "time": "2026-11-10T14:23:00+08:00",
-      "content": "RAGStore · P0 计划（不依赖官方题包）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
+      "content": "MiniVectorDB · P0 计划（不依赖官方题包）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
       "source": "student",
-      "excerpt": "RAGStore · P0 计划（不依赖官方题包）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create"
+      "excerpt": "MiniVectorDB · P0 计划（不依赖官方题包）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create"
     },
     {
       "id": "up-12",
@@ -144,31 +144,31 @@
     {
       "id": "up-17",
       "time": "2026-11-10T14:23:00+08:00",
-      "content": "RAGStore 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
+      "content": "MiniVectorDB 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
       "source": "student",
-      "excerpt": "RAGStore 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create",
+      "excerpt": "MiniVectorDB 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create",
       "note": "执行一份已经写好的计划，本身不含新的判断。"
     },
     {
       "id": "up-18",
       "time": "2026-11-10T14:23:00+08:00",
-      "content": "RAGStore 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
+      "content": "MiniVectorDB 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
       "source": "student",
-      "excerpt": "RAGStore 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create"
+      "excerpt": "MiniVectorDB 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create"
     },
     {
       "id": "up-19",
       "time": "2026-11-10T14:23:00+08:00",
-      "content": "RAGStore 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
+      "content": "MiniVectorDB 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
       "source": "student",
-      "excerpt": "RAGStore 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create"
+      "excerpt": "MiniVectorDB 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create"
     },
     {
       "id": "up-20",
       "time": "2026-11-10T14:23:00+08:00",
-      "content": "RAGStore 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
+      "content": "MiniVectorDB 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create them again. Mark them as in_progress as you work, starting with the first one. Don't stop until you have completed all the to-dos.",
       "source": "student",
-      "excerpt": "RAGStore 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create"
+      "excerpt": "MiniVectorDB 性能与合规加固（A–D 批次）\n\nImplement the plan as specified, it is attached for your reference. Do NOT edit the plan file itself.\n\nTo-do's from the plan have already been created. Do not create"
     },
     {
       "id": "up-21",
@@ -256,13 +256,13 @@
       "turns": [
         {
           "role": "student",
-          "content": "@docs/06-加赛赛题-RAGStore.md @docs/07-加赛算分规则.md 现在大赛增加了一轮加赛，相关的文档在这里；\n1.根据文档的加赛构建要求查看现在的环节是否能满足构建要求\n2.初步部署之后，根据得分要求，目标拿到满分要做哪些方面的优化\n3.如何逐步有规划地高效完成优化验证的步骤和规则，完成过程中需要哪些文档辅助\n4.全程由agent或者配合subagent完成，拟定完整计划",
-          "excerpt": "@docs/06-加赛赛题-RAGStore.md @docs/07-加赛算分规则.md 现在大赛增加了一轮加赛，相关的文档在这里；\n1.根据文档的加赛构建要求查看现在的环节是否能满足构建要求\n2.初步部署之后，根据得分要求，目标拿到满分要做哪些方面的优化\n3.如何逐步有规划地高效完成优化验证的步骤和规则，完成过程中需要哪些文档辅助\n4.全程由agent或者配合subagent完成，拟定完",
+          "content": "@docs/06-加赛赛题-MiniVectorDB.md @docs/07-加赛算分规则.md 现在大赛增加了一轮加赛，相关的文档在这里；\n1.根据文档的加赛构建要求查看现在的环节是否能满足构建要求\n2.初步部署之后，根据得分要求，目标拿到满分要做哪些方面的优化\n3.如何逐步有规划地高效完成优化验证的步骤和规则，完成过程中需要哪些文档辅助\n4.全程由agent或者配合subagent完成，拟定完整计划",
+          "excerpt": "@docs/06-加赛赛题-MiniVectorDB.md @docs/07-加赛算分规则.md 现在大赛增加了一轮加赛，相关的文档在这里；\n1.根据文档的加赛构建要求查看现在的环节是否能满足构建要求\n2.初步部署之后，根据得分要求，目标拿到满分要做哪些方面的优化\n3.如何逐步有规划地高效完成优化验证的步骤和规则，完成过程中需要哪些文档辅助\n4.全程由agent或者配合subagent完成，拟定完",
           "source": "record:read-docs"
         },
         {
           "role": "agent",
-          "content": "<think>\nThis is a substantial new task. Let me check the background command result, and check whether the seekdb repo has a 2026-competition-round2 branch. Also check if there's an existing RAGStore implementation anywhere.\n\nKey facts: The new 加赛 (extra round) is RAGStore — implement from scratch a lightweight vector database supporting SQL, persistence, transactions, recovery. Deliverables: source code + Dockerfile + conversation.json on branch `2026-competition-round2` of seekdb repo.\n\nBig question: where does the implementation live? The doc says \"使用 seekdb 仓库的 2026-competition-round2 分支进行开发\". So it could be a new directory in seekdb repo (e.g. `ragstore/`). Let me check if the branch exists remotely.\n\nAlso need to check network availability.\n\nLet me check the",
+          "content": "<think>\nThis is a substantial new task. Let me check the background command result, and check whether the seekdb repo has a 2026-competition-round2 branch. Also check if there's an existing MiniVectorDB implementation anywhere.\n\nKey facts: The new 加赛 (extra round) is MiniVectorDB — implement from scratch a lightweight vector database supporting SQL, persistence, transactions, recovery. Deliverables: source code + Dockerfile + conversation.json on branch `2026-competition-round2` of seekdb repo.\n\nBig question: where does the implementation live? The doc says \"使用 seekdb 仓库的 2026-competition-round2 分支进行开发\". So it could be a new directory in seekdb repo (e.g. `minivectordb/`). Let me check if the branch exists remotely.\n\nAlso need to check network availability.\n\nLet me check the",
           "excerpt": "<think>\nThis is a substantial new task. Let me check the background command result, and check whether the seekdb repo has a 2026-competition-round2 branch. Also check if there's an existing",
           "source": "record:read-docs"
         }
@@ -281,8 +281,8 @@
         },
         {
           "role": "agent",
-          "content": "## 结论\n\n**Docker 是硬性要求，但“本地必须用 Docker 验证”不是。**\n\n题面里 Docker 相关条款分两类：\n\n**① 不可协商的交付形态（必须）**\n\n```146:146:docs/06-加赛赛题-RAGStore.md\n开发语言和本地操作系统不限，正式运行环境统一为 Linux x86_64 容器。选手提交 Dockerfile，由平台构建并锁定镜像；正式执行时禁止联网，依赖须在构建阶段安装完成并锁定版本。\n```\n\n```354:354:docs/06-加赛赛题-RAGStore.md\n2. **Dockerfile**：能够从提交的源码构建并启动评测容器。\n```\n\n也就是：评测方**只会**用你提交的 Dockerfile 构建镜像，然后锁镜像跑 MySQL case。没有“非 Docker 提交路径”。而且源码 + Dockerfile + `conversation.json` 必须同一 commit，平台以 commit SHA 锁定评测材料。\n\n**② 可协商的部分（本地开发）**\n\n- 开发语言、本地 OS 不限 → 本地写 Rust、编译成二进制、直接 `./ragstore` 用管道喂 SQL 测，完全合法。\n- 题面给的 `COPY ragstore /app/ragstore` 是“封装示例”，官方明确要求正式提交补齐从源码构建的步骤或用多阶段构建（§4.2.1末段）。\n- “正式执行时禁止联网”指的是**评测运行阶段**，不是构建阶段；构建期联网装依赖是被鼓励的（“依赖须在构建阶段安装完成并锁定版本”）。\n\n## 对你当前情况的影响\n\n本机拉不到 Docker Hub 只影响**本地镜像构建验证**，不影响交付合规性 —— 平台侧有网、有自己的镜像缓存。\n\n但你现有 Dockerfile 有两个真实风险，值得现在就处理：",
-          "excerpt": "## 结论\n\n**Docker 是硬性要求，但“本地必须用 Docker 验证”不是。**\n\n题面里 Docker 相关条款分两类：\n\n**① 不可协商的交付形态（必须）**\n\n```146:146:docs/06-加赛赛题-RAGStore.md\n开发语言和本地操作系统不限，正式运行环境统一为 Linux x86_64 容器。选手提交",
+          "content": "## 结论\n\n**Docker 是硬性要求，但“本地必须用 Docker 验证”不是。**\n\n题面里 Docker 相关条款分两类：\n\n**① 不可协商的交付形态（必须）**\n\n```146:146:docs/06-加赛赛题-MiniVectorDB.md\n开发语言和本地操作系统不限，正式运行环境统一为 Linux x86_64 容器。选手提交 Dockerfile，由平台构建并锁定镜像；正式执行时禁止联网，依赖须在构建阶段安装完成并锁定版本。\n```\n\n```354:354:docs/06-加赛赛题-MiniVectorDB.md\n2. **Dockerfile**：能够从提交的源码构建并启动评测容器。\n```\n\n也就是：评测方**只会**用你提交的 Dockerfile 构建镜像，然后锁镜像跑 MySQL case。没有“非 Docker 提交路径”。而且源码 + Dockerfile + `conversation.json` 必须同一 commit，平台以 commit SHA 锁定评测材料。\n\n**② 可协商的部分（本地开发）**\n\n- 开发语言、本地 OS 不限 → 本地写 Rust、编译成二进制、直接 `./minivectordb` 用管道喂 SQL 测，完全合法。\n- 题面给的 `COPY minivectordb /app/minivectordb` 是“封装示例”，官方明确要求正式提交补齐从源码构建的步骤或用多阶段构建（§4.2.1末段）。\n- “正式执行时禁止联网”指的是**评测运行阶段**，不是构建阶段；构建期联网装依赖是被鼓励的（“依赖须在构建阶段安装完成并锁定版本”）。\n\n## 对你当前情况的影响\n\n本机拉不到 Docker Hub 只影响**本地镜像构建验证**，不影响交付合规性 —— 平台侧有网、有自己的镜像缓存。\n\n但你现有 Dockerfile 有两个真实风险，值得现在就处理：",
+          "excerpt": "## 结论\n\n**Docker 是硬性要求，但“本地必须用 Docker 验证”不是。**\n\n题面里 Docker 相关条款分两类：\n\n**① 不可协商的交付形态（必须）**\n\n```146:146:docs/06-加赛赛题-MiniVectorDB.md\n开发语言和本地操作系统不限，正式运行环境统一为 Linux x86_64 容器。选手提交",
           "source": "record:docker-question"
         }
       ]
@@ -357,7 +357,7 @@
         },
         {
           "role": "agent",
-          "content": "好，代码和文档都摸清了。整理如下。\n\n## 一、当前完成度\n\n代码4700 行，22 个源文件。按题面七类必测组：\n\n| 必测组 | 状态 | 缺口 |\n|---|---|---|\n| 1 SQL 与存储 | 🟡 骨架 | 单元测试 36 个，无 mysqltest 风格用例文件 |\n| 2 精确检索 | 🟡 骨架 | TopK 走**全表 collect_rows → 逐行 filter → sort**，不是向量扫描 |\n| 3 近似检索 | ⬜ 未做 | `vector/mod.rs` 只有 `dist`，IVF/ann 完全空白 |\n| 4 索引维护 | ⬜ 未做 | `exec_create_vector_index` 只做校验就 `Ok(())` 返回，**不建任何东西** |\n| 5 事务 | 🟡 骨架 | 读己之写/回滚有，事务内**向量检索**一致性未验 |\n| 6 恢复 | 🟡 骨架 | WAL 重放有了，\"恢复途中再终止\"幂等未实测 |\n| 7 资源 | ⬜ 未验 | `bufferpool.rs` 实现了但**完全没接线**（`BufferPool::new` 全仓无调用） |\n\n`02-plan.md` 里规划的 `vector/{exact,ann,index}.rs` 三个文件都不存在。\n\n## 二、不依赖题包、现在就能做完的（最高优先）\n\n### 1. ANN + 索引维护 —— 必测组 3、4 的**准入硬门槛**\n\n这是最致命的空白。题面 §3.2 明确\"近似检索\"和\"索引维护\"是必测组，而 `CREATE VECTOR INDEX` 现在是**空实现**：\n\n```54:72:work/minivec-seekdb/ragstore/src/exec/mod.rs\nfn exec_create_vector_index(&mut self, ci: &CreateVectorIndex) -> SqlResult<QueryResult> {\n    ...\n    if col_idx != vec_idx {\n        return Err(SqlError::not_supported(...));\n    }\n    Ok(QueryResult::ok())\n}\n```\n\n语句解析成功了、校验通过了、然后什么都没做就返回成功 —— 这在语义上比报错更糟：**如果题包用例是\"建索引后 ANN 结果正确\"**，现在必然失败。\n\n要做的：\n- `vector/ann.rs`：IVF-Flat（k-means训练 + 倒排表持久化到 `ann.dat`）\n- `vector/index.rs`：`CREATE VECTOR INDEX` 生命周期；增删改后倒排表同步\n- `vector/exact.rs`：真正的向量扫描路径（现在没有）\n- **Recall@10 ≥ 0.95 是硬门槛**，无过滤/有过滤两组都要过\n\n### 2. 性能路径重写 —— 查询占 2/3 权重\n\n题面 §3.3.1：查询权重 66⅔%，且 T 占单项 60%。现在 `exec_select` 的路径是：\n\n```222:248:work/minivec-seekdb/ragstore/src/exec/query.rs\npub(crate) fn collect_rows(&mut self, def: &TableDef) -> SqlResult<Vec<LiveRow>> {\n    ...\n    for row_id in 0..count {\n        let meta = match state.store.read_meta(row_id)? { ... };\n        let image = state.store.read_columns(meta.col_offset, meta.col_len)?;\n        let cols = crate::storage::format::decode_row(&image)?;\n        out.push(LiveRow { row_id, pk: meta.pk, cols });\n    }\n```\n\n每行一次 `seek` + `read_exact`（**系统调用逐行发**），然后**把整行解码进内存** —— 包括把向量也从 `col.dat` 解出来。而 `vec.dat` 的**维度主序布局完全没被用上**：`read_block_matrix` 写好了但无人调用。\n\n维度主序 + AVX2 内核（`l2_sq_avx2`）都实现了，**却走的是逐行标量路径**。按 10k 行 × 128 维算，现在每次查询要做 10k 次 `seek`+`read`+`decode`，而设计意图是 3 次块读 + SIMD 累加。\n\n这是**性能分 40 分**的主要失分点，也是最容易拿到的。\n\n### 3. 缓冲池接线 —— 必测组 7\n\n`bufferpool.rs` 实现了（`BLOCK_SIZE` 64KB、有界 LRU、`pread`），但 `BufferPool::new` 全仓零调用。题面 §3.3.2 的内存口径是 cgroup `memory.peak`（**含页缓存**），\"数据量超内存\"用例必须靠它过。设计文档里写好了不用 mmap 的理由，但没接线等于没做。\n\n### 4. 本地测试基座 —— Stage 5 空缺",
+          "content": "好，代码和文档都摸清了。整理如下。\n\n## 一、当前完成度\n\n代码4700 行，22 个源文件。按题面七类必测组：\n\n| 必测组 | 状态 | 缺口 |\n|---|---|---|\n| 1 SQL 与存储 | 🟡 骨架 | 单元测试 36 个，无 mysqltest 风格用例文件 |\n| 2 精确检索 | 🟡 骨架 | TopK 走**全表 collect_rows → 逐行 filter → sort**，不是向量扫描 |\n| 3 近似检索 | ⬜ 未做 | `vector/mod.rs` 只有 `dist`，IVF/ann 完全空白 |\n| 4 索引维护 | ⬜ 未做 | `exec_create_vector_index` 只做校验就 `Ok(())` 返回，**不建任何东西** |\n| 5 事务 | 🟡 骨架 | 读己之写/回滚有，事务内**向量检索**一致性未验 |\n| 6 恢复 | 🟡 骨架 | WAL 重放有了，\"恢复途中再终止\"幂等未实测 |\n| 7 资源 | ⬜ 未验 | `bufferpool.rs` 实现了但**完全没接线**（`BufferPool::new` 全仓无调用） |\n\n`02-plan.md` 里规划的 `vector/{exact,ann,index}.rs` 三个文件都不存在。\n\n## 二、不依赖题包、现在就能做完的（最高优先）\n\n### 1. ANN + 索引维护 —— 必测组 3、4 的**准入硬门槛**\n\n这是最致命的空白。题面 §3.2 明确\"近似检索\"和\"索引维护\"是必测组，而 `CREATE VECTOR INDEX` 现在是**空实现**：\n\n```54:72:work/minivec-seekdb/minivectordb/src/exec/mod.rs\nfn exec_create_vector_index(&mut self, ci: &CreateVectorIndex) -> SqlResult<QueryResult> {\n    ...\n    if col_idx != vec_idx {\n        return Err(SqlError::not_supported(...));\n    }\n    Ok(QueryResult::ok())\n}\n```\n\n语句解析成功了、校验通过了、然后什么都没做就返回成功 —— 这在语义上比报错更糟：**如果题包用例是\"建索引后 ANN 结果正确\"**，现在必然失败。\n\n要做的：\n- `vector/ann.rs`：IVF-Flat（k-means训练 + 倒排表持久化到 `ann.dat`）\n- `vector/index.rs`：`CREATE VECTOR INDEX` 生命周期；增删改后倒排表同步\n- `vector/exact.rs`：真正的向量扫描路径（现在没有）\n- **Recall@10 ≥ 0.95 是硬门槛**，无过滤/有过滤两组都要过\n\n### 2. 性能路径重写 —— 查询占 2/3 权重\n\n题面 §3.3.1：查询权重 66⅔%，且 T 占单项 60%。现在 `exec_select` 的路径是：\n\n```222:248:work/minivec-seekdb/minivectordb/src/exec/query.rs\npub(crate) fn collect_rows(&mut self, def: &TableDef) -> SqlResult<Vec<LiveRow>> {\n    ...\n    for row_id in 0..count {\n        let meta = match state.store.read_meta(row_id)? { ... };\n        let image = state.store.read_columns(meta.col_offset, meta.col_len)?;\n        let cols = crate::storage::format::decode_row(&image)?;\n        out.push(LiveRow { row_id, pk: meta.pk, cols });\n    }\n```\n\n每行一次 `seek` + `read_exact`（**系统调用逐行发**），然后**把整行解码进内存** —— 包括把向量也从 `col.dat` 解出来。而 `vec.dat` 的**维度主序布局完全没被用上**：`read_block_matrix` 写好了但无人调用。\n\n维度主序 + AVX2 内核（`l2_sq_avx2`）都实现了，**却走的是逐行标量路径**。按 10k 行 × 128 维算，现在每次查询要做 10k 次 `seek`+`read`+`decode`，而设计意图是 3 次块读 + SIMD 累加。\n\n这是**性能分 40 分**的主要失分点，也是最容易拿到的。\n\n### 3. 缓冲池接线 —— 必测组 7\n\n`bufferpool.rs` 实现了（`BLOCK_SIZE` 64KB、有界 LRU、`pread`），但 `BufferPool::new` 全仓零调用。题面 §3.3.2 的内存口径是 cgroup `memory.peak`（**含页缓存**），\"数据量超内存\"用例必须靠它过。设计文档里写好了不用 mmap 的理由，但没接线等于没做。\n\n### 4. 本地测试基座 —— Stage 5 空缺",
           "excerpt": "好，代码和文档都摸清了。整理如下。\n\n## 一、当前完成度\n\n代码4700 行，22 个源文件。按题面七类必测组：\n\n| 必测组 | 状态 | 缺口 |\n|---|---|---|\n| 1 SQL 与存储 | 🟡 骨架 | 单元测试 36 个，无 mysqltest 风格用例文件 |\n| 2 精确检索 | 🟡 骨架 | TopK 走**全表 collect_rows → 逐行 filter →",
           "source": "record:inventory"
         }
@@ -551,7 +551,7 @@
       "dimension": "取舍与反思",
       "hypothesis_author": "student",
       "hypothesis": "查询路径从逐行系统调用改为块扫描加有界堆之后，耗时应显著下降，I/O 应显著下降，内存不应上升。",
-      "command": "python3 tools/perf_compare.py --before <基线二进制> --after ragstore/target/release/ragstore --rounds 3",
+      "command": "python3 tools/perf_compare.py --before <基线二进制> --after minivectordb/target/release/minivectordb --rounds 3",
       "result": "== exact ==\n  query_t_ms                    29106.1 ->         1121.4  (25.95x)\n  query_io_bytes           5811434332.0 ->      7204332.0  (806.66x)\n  query_peak_rss_kb             17160.0 ->        14932.0  (1.15x)\n  write_t_ms                     2036.4 ->         2240.8  (0.91x)\n  write_io_bytes             28240725.0 ->     23080741.0  (1.22x)\n== ann ==\n  query_t_ms                    57447.0 ->         2949.9  (19.47x)\n  query_io_bytes           5811434332.0 ->      7204332.0  (806.66x)\n  query_peak_rss_kb             16676.0 ->        14948.0  (1.12x)\n  recall filtered 1.0, unfiltered 1.0",
       "result_excerpt": "  query_t_ms                    29106.1 ->         1121.4  (25.95x)\n  query_io_bytes           5811434332.0 ->      7204332.0  (806.66x)",
       "interpretation": "查询耗时降 26 倍、I/O 降 807 倍，而内存反而降了 —— 说明块缓存没有把内存撑起来，因为缓存的是**解码后**的块而且有界。写入耗时略降（0.91x）说明写入路径没有被这次改动拖慢。",
@@ -658,14 +658,14 @@
       "hypothesis_author": "agent",
       "hypothesis": "在容器里杀掉整个容器，与在宿主杀掉进程是同一种崩溃。",
       "command": "ROUNDS=12 BATCH=200 bash tools/killtest_container.sh",
-      "result": "RAGStore crash recovery test (container)\n  image  : mvdb-final\n  rounds : 12\nround 1: 400 rows, no duplicates, no ghosts\n…\nround 12: 2600 rows, no duplicates, no ghosts\n\nall checks passed",
-      "result_excerpt": "RAGStore crash recovery test (container)\n  image  : mvdb-final",
+      "result": "MiniVectorDB crash recovery test (container)\n  image  : mvdb-final\n  rounds : 12\nround 1: 400 rows, no duplicates, no ghosts\n…\nround 12: 2600 rows, no duplicates, no ghosts\n\nall checks passed",
+      "result_excerpt": "MiniVectorDB crash recovery test (container)\n  image  : mvdb-final",
       "interpretation": "容器内 12 轮同样全绿，数据目录是宿主挂载目录，所以崩溃后重启读的是同一份 /data。",
       "student_quote": "",
       "student_evidence": null,
       "result_evidence": {
         "ref": "/experiments/8/result_excerpt",
-        "excerpt": "RAGStore crash recovery test (container)\n  image  : mvdb-final"
+        "excerpt": "MiniVectorDB crash recovery test (container)\n  image  : mvdb-final"
       }
     },
     {
@@ -763,7 +763,7 @@
       "dimension": "独立验证与质疑",
       "hypothesis_author": "student",
       "hypothesis": "本地可以推进的工作，应当集中在「公开用例测不到、但仍属于正式要求」的那些能力上。",
-      "command": "python3 tools/check_formal_requirements.py --binary ragstore/target/release/ragstore",
+      "command": "python3 tools/check_formal_requirements.py --binary minivectordb/target/release/minivectordb",
       "result": "== vectors\nok   vector/nan                                   data_error\nok   vector/inf                                   data_error\nok   vector/too-few                               dimension_mismatch\nok   vector/overflow                              data_error\n== atomicity\nok   atomic/no-row-left-behind                    []\nok   atomic/the-earlier-statement-stays           [[10]]\n== crash\nok   crash/the-committed-row-survives             [[1]]\nok   crash/the-database-recovers-again            [[1], [100], [101]]\n== large\nok   large/the-row-is-there                       [[39999]]\n== ann\nok   ann/the-filter-is-honoured                   [4, 26, 48, 70, 92, 114, 136, 158, 180, 202]\nok   ann/no-duplicates                            [4, 26, 48, 70, 92, 114, 136, 158, 180, 202]\nok   ann/the-recall-is-high                       10 of 10\nok   ann/the-index-update-is-transactional        [[1]]\n\n25 of 25 requirements hold",
       "result_excerpt": "ok   ann/the-recall-is-high                       10 of 10",
       "interpretation": "官方 README 点名的 5 项全部满足：非法向量被拒、失败语句不留部分修改、崩溃后已提交保留且恢复可重入、能处理超过内存限额的数据、近似检索满足过滤/有效 ID/无重复/召回率且索引更新不破坏事务语义。\n**但这个结论当时是不完整的**，因为这些检查用的数据量（40000 行、5000 行）远小于判题可能给出的规模。规模才是下一个实验的入口。",
@@ -853,7 +853,7 @@
       "hypothesis_author": "student",
       "hypothesis": "上游是否发布了更完整的 SQL 语法清单；如果发布了，当前实现按题面子集做的部分就可能存在缺口。",
       "command": "git fetch upstream 2026-competition-round2；git diff --stat c842a368c upstream/2026-competition-round2；git show upstream/2026-competition-round2:mysqltest/manifest.json；git show upstream/2026-competition-round2:protocol_check/config.json",
-      "result": " STDIO_PROTOCOL.md                                  |   311 +++++++++++++++\n mysqltest/README.md                                |    93 ++++++\n protocol_check/_assertions.py                       |    42 ++++\n protocol_check/_transport.py                        |   181 +++++++\n protocol_check/config.json                          |    12 +\n protocol_check/run.py                               |   128 ++++++\n 50 files changed, 1726 insertions(+)\nversion: ragstore-public-v4 scope: public-samples\ngroups: {'sql': 8, 'storage': 3, 'vector': 4, 'transaction': 5}\ncases: 20 statements: 95\n\"cpus\": \"2\", \"memory\": \"2g\", \"pids_limit\": 128,\n\"error_codes\": {}",
+      "result": " STDIO_PROTOCOL.md                                  |   311 +++++++++++++++\n mysqltest/README.md                                |    93 ++++++\n protocol_check/_assertions.py                       |    42 ++++\n protocol_check/_transport.py                        |   181 +++++++\n protocol_check/config.json                          |    12 +\n protocol_check/run.py                               |   128 ++++++\n 50 files changed, 1726 insertions(+)\nversion: minivectordb-public-v4 scope: public-samples\ngroups: {'sql': 8, 'storage': 3, 'vector': 4, 'transaction': 5}\ncases: 20 statements: 95\n\"cpus\": \"2\", \"memory\": \"2g\", \"pids_limit\": 128,\n\"error_codes\": {}",
       "result_excerpt": "groups: {'sql': 8, 'storage': 3, 'vector': 4, 'transaction': 5}\ncases: 20 statements: 95",
       "interpretation": "**上游没有发布任何新的语法规范文件**，所以「是否存在更完整的语法清单」这个问题的答案是：不存在。\n更有价值的收获是三个可核对的数字：\n1. 公开用例分 4 组（sql 8 / storage 3 / vector 4 / transaction 5）、95 条 SQL，正式 29 组意味着保留的 9 组落在这 4 组里 —— 隐藏的是数据与规模，不是新的功能类别；\n2. `config.json` 的 `cpus 2` / `memory 2g` / `pids_limit 128` 与本轮自测用的限制完全一致，说明规模压测是对着判题条件做的；\n3. `error_codes` 是空对象 —— 错误码的冻结映射尚未公布，这是一处本地无法消除的不确定性，已如实写进 `limitations`。",
       "student_quote": "再次查看上游仓库有没有更新题包或者测试套件",
@@ -894,7 +894,7 @@
       "dimension": "技术理解与迁移",
       "hypothesis_author": "student",
       "hypothesis": "ANN 改用哈希表查找，并先估算哈希表的内存占用。隐含的判断是：哈希表是 ANN 这条路上的内存瓶颈，所以换掉它就能省内存。",
-      "command": "读 ragstore/src/storage/table.rs 与 vector/ann.rs，把每种候选结构的每行字节数乘以行数，列出对照表",
+      "command": "读 minivectordb/src/storage/table.rs 与 vector/ann.rs，把每种候选结构的每行字节数乘以行数，列出对照表",
       "result": "| 结构 | 每行字节 | 10k 行 | 100k 行 | 1M 行 |\n|---|---:|---:|---:|---:|\n| `HashMap<u64,(u32,u32)>` (hashbrown,16B 桶 + 1B 控制字, 负载 7/8) | ~28 | 278 KB | 2.1 MB | 34 MB |\n| **`Vec<(u32,u32)>` 稠密数组，按 row_id 直接下标** | **8** | **80 KB** | **800 KB** | **8 MB** |\n| `Vec<u32>` 稠密（row_id → rows 下标） | 4 | 40 KB | 400 KB | 4 MB |\n| **当前 ANN 索引的向量副本**（`Entry.vec`） | **dim×4+40 = 552** | **5.5 MB** | 55 MB | **550 MB** |\n| 去掉向量副本后的 ANN 索引 | 16 | 160 KB | 1.6 MB | 16 MB |\n\n**关键结论**：哈希表根本不是内存瓶颈 —— ANN 索引里的向量副本是它的 **20 倍**。而且稠密数组比哈希表省 3.5 倍内存、免去哈希计算。真正的内存优化是**让 ANN 索引不再持有向量副本**（优化 D2），配合块扫描按需从 `vec.dat` 读。",
       "result_excerpt": "哈希表根本不是内存瓶颈 —— ANN 索引里的向量副本是它的 **20 倍**。而且稠密数组比哈希表省 3.5 倍内存、免去哈希计算。",
       "interpretation": "**结论与学生的前提相反，而这个反转正是这个实例的价值所在。**\n学生要的是「哈希表的内存占用」，把账算出来之后却发现：\n1. 哈希表每行约 28 字节，一百万行 34 MB；\n2. 而 ANN 索引里那份向量副本每行 552 字节，一百万行 **550 MB** —— 是哈希表的 20 倍；\n3. 更好的消息是 `row_id` 在本引擎中**始终稠密**（`next_row_id` = 已提交行数 + 暂存数），所以根本不需要哈希表，稠密数组按 `row_id` 直接下标就行，每行 8 字节，比哈希表还省 3.5 倍、免去哈希计算。\n于是同一个问题的答案，因为先算了账而完全不同：从「把哈希表换小」变成「让 ANN 索引不再持有向量副本」。\n**同一套推理随后被迁移到另一个场景**：两百万行时内存撞上 2 GiB 限额，当时的第一反应也是「实现占内存太多」，于是去看缓冲池与索引 —— 同样是往错的方向优化。直到读了 cgroup 的 `memory.stat` 才发现：进程堆只有 44 MiB，是 `file`（页缓存）占了 1090 MiB，而页缓存的根因是 WAL 里存着每一行已提交数据的副本。**「内存不够」和「谁在占内存」是两个问题**，这个区分在两个相隔很远的场景里各用了一次。",
@@ -915,7 +915,7 @@
       "dimension": "问题理解与自主拆解",
       "hypothesis_author": "student",
       "hypothesis": "题包尚未公布时，真正该问的不是「还差什么功能」，而是「题面规定了哪几类必测组，每一组现在到哪一步、缺口是什么」。",
-      "command": "读 ragstore/src/exec/mod.rs 与 src/exec/query.rs，按题面 §3.2 的七类必测组逐组核对实现",
+      "command": "读 minivectordb/src/exec/mod.rs 与 src/exec/query.rs，按题面 §3.2 的七类必测组逐组核对实现",
       "result": "代码4700 行，22 个源文件。按题面七类必测组：\n| 必测组 | 状态 | 缺口 |\n|---|---|---|\n| 1 SQL 与存储 | 🟡 骨架 | 单元测试 36 个，无 mysqltest 风格用例文件 |\n| 2 精确检索 | 🟡 骨架 | TopK 走**全表 collect_rows → 逐行 filter → sort**，不是向量扫描 |\n| 3 近似检索 | ⬜ 未做 | `vector/mod.rs` 只有 `dist`，IVF/ann 完全空白 |\n| 4 索引维护 | ⬜ 未做 | `exec_create_vector_index` 只做校验就 `Ok(())` 返回，**不建任何东西** |\n| 5 事务 | 🟡 骨架 | 读己之写/回滚有，事务内**向量检索**一致性未验 |\n| 6 恢复 | 🟡 骨架 | WAL 重放有了，\"恢复途中再终止\"幂等未实测 |\n| 7 资源 | ⬜ 未验 | `bufferpool.rs` 实现了但**完全没接线**（`BufferPool::new` 全仓无调用） |\n\n这是最致命的空白。题面 §3.2 明确\"近似检索\"和\"索引维护\"是必测组，而 `CREATE VECTOR INDEX` 现在是**空实现**：\n语句解析成功了、校验通过了、然后什么都没做就返回成功 —— 这在语义上比报错更糟：**如果题包用例是\"建索引后 ANN 结果正确\"**，现在必然失败。",
       "result_excerpt": "语句解析成功了、校验通过了、然后什么都没做就返回成功 —— 这在语义上比报错更糟",
       "interpretation": "这个拆解改变的是**工作的排序**，不只是把缺口列出来。\n两个判断由此确定：\n1. 近似检索与索引维护是准入的硬门槛，因为空实现比报错更糟 —— 它会让「建索引后 ANN 结果正确」这类用例**必然失败**，而且失败时看起来一切正常；\n2. 缓冲池写了却没接线，说明它是**被设计出来的**而不是被用出来的，所以把它接上、并且接对，比新写一个更划算。\n之后的实施顺序（先 ANN 与索引、再事务与恢复、最后资源与性能）就是从这张表里读出来的，而不是凭感觉排的 —— 题包还没发布，但题面已经把必测组列清楚了。",
@@ -936,7 +936,7 @@
       "dimension": "问题理解与自主拆解",
       "hypothesis_author": "student",
       "hypothesis": "在动任何一行代码之前，先要知道那 1090 ms 花在哪个阶段。按阶段的进程内计时是可核对的做法，比「优化一下看看」更能指出该改哪里。",
-      "command": "python3 tools/probe_phases_split.py ragstore/target/release/ragstore exact 10000 1000 unfiltered",
+      "command": "python3 tools/probe_phases_split.py minivectordb/target/release/minivectordb exact 10000 1000 unfiltered",
       "result": "PROF parse_sql                         5.127 ms  x1000\nPROF q.parse_literal                   5.354 ms  x1000\nPROF q.txn_updated                     0.041 ms  x1000\nPROF q.txn_deleted                     0.030 ms  x1000\nPROF q.exact_scan                    218.860 ms  x1000\nPROF q.materialize                     7.093 ms  x1000\nPROF q.rowindex                        1.279 ms  x1000\nPROF engine_execute                  246.481 ms  x1000",
       "result_excerpt": "PROF q.exact_scan                    218.860 ms  x1000",
       "interpretation": "拆开之后结论很直接：**八成的进程内时间在一件事上** —— `q.exact_scan` 占 218.9 ms，而合计只有 246.5 ms。固定开销（解析 SQL、解析向量字面量、事务差集、行号索引）加起来只有 11.7 ms，逐行物化 7.1 ms。\n这一步决定了后面所有动作的顺序：**先动扫描路径，别去优化那 11.7 ms** —— 把固定开销再砍一半，也只值 5.8 ms。",
@@ -957,7 +957,7 @@
       "dimension": "技术理解与迁移",
       "hypothesis_author": "agent",
       "hypothesis": "`materialize_rows` 对答案里的每一行调一次 `read_row`，而 `read_row` 每次要发三次 `pread`（元数据、标量列、向量）。如果块缓存里已经有解码后的矩阵，这些读就是白读的。",
-      "command": "读 ragstore/src/storage/table.rs 的 read_row，数清一次 TopK 答案要发多少次系统调用",
+      "command": "读 minivectordb/src/storage/table.rs 的 read_row，数清一次 TopK 答案要发多少次系统调用",
       "result": "每行 3 次 pread（meta.dat / col.dat / vec.dat），K=10 × 1000 次查询 = 30 000 次系统调用。\n改为 `read_row_cached` 后：\nPROF q.materialize                     7.093 ms  x1000\n（改前 45.9 ms）",
       "result_excerpt": "PROF q.materialize                     7.093 ms  x1000\n（改前 45.9 ms）",
       "interpretation": "**6.5 倍的加速，而且一行磁盘 I/O 都没少读** —— 因为要读的东西本来就在内存里，`read_row` 只是没有去拿已经解码好的那份。\n这是这一轮里唯一一个「不改算法、不改语义、只是不再重复做已经做过的事」的改动，所以它也是唯一可以毫无顾虑地保留的改动。",
@@ -991,7 +991,7 @@
       "dimension": "实验与反馈迭代",
       "hypothesis_author": "agent",
       "hypothesis": "K=10 的有界堆在 10000 行里，99.9% 的候选比堆里最差的那行更远。把堆顶的平方距离缓存成一个标量，就能用一次浮点比较否掉这些候选，不必走 `BinaryHeap::peek` 与 `f32::partial_cmp`。",
-      "command": "读 ragstore/src/vector/exact.rs，在 TopK 上加 worst_sq 字段与一次比较的快路径",
+      "command": "读 minivectordb/src/vector/exact.rs，在 TopK 上加 worst_sq 字段与一次比较的快路径",
       "result": "commit 77c2a0ec4 perf: drop a candidate that is worse with one comparison\nPROF q.exact_scan                    218.860 ms  x1000\n（改前 245.7 ms）",
       "result_excerpt": "commit 77c2a0ec4 perf: drop a candidate that is worse with one comparison",
       "interpretation": "**只改排序键，不改比较语义**：候选堆里比的是平方距离与主键，平方根只对进入最终答案的 K 行开一次。距离是单调的，所以顺序不变 —— 这一点由「答案与基线逐字节相同」这道闸门守住，而不是靠推理。\n省下的是 245.7 → 218.9 ms 里的一部分，但更重要的是这个改动的形状：**它没有触碰任何一条语义路径**。",
@@ -1059,8 +1059,8 @@
       "dimension": "问题理解与自主拆解",
       "hypothesis_author": "student",
       "hypothesis": "题包还没有发布、完整语法与错误码只能靠文档反推时，真正该做的不是等，而是先把不依赖题包的部分做完，并把协议层做成可替换的，等题包到位再对齐。",
-      "command": "git fetch upstream 2026-competition-round2；git ls-tree upstream/2026-competition-round2；读 docs/06-加赛赛题-RAGStore.md 的交付与协议章节",
-      "result": "上游 commit `c842a368c3`（2026-11-04）删掉了 seekdb 全部源码（`src/`、`tools/`、`deps/` 等 300 个文件），只留下 CI 脚手架 + `.github/` 脚本 + **两个 0 字节占位文件：根目录 `Dockerfile` 和根目录 `conversation.json`**。\n分支目前只有 `.github/script/seekdb/mysqltest_for_seekdb.py`，**没有 RAGStore 的 stdin/stdout 题包**。",
+      "command": "git fetch upstream 2026-competition-round2；git ls-tree upstream/2026-competition-round2；读 docs/06-加赛赛题-MiniVectorDB.md 的交付与协议章节",
+      "result": "上游 commit `c842a368c3`（2026-11-04）删掉了 seekdb 全部源码（`src/`、`tools/`、`deps/` 等 300 个文件），只留下 CI 脚手架 + `.github/` 脚本 + **两个 0 字节占位文件：根目录 `Dockerfile` 和根目录 `conversation.json`**。\n分支目前只有 `.github/script/seekdb/mysqltest_for_seekdb.py`，**没有 MiniVectorDB 的 stdin/stdout 题包**。",
       "result_excerpt": "上游 commit `c842a368c3`（2026-11-04）删掉了 seekdb 全部源码（`src/`、`tools/`、`deps/` 等 300 个文件）",
       "interpretation": "这个拆解改变的是**工作的排序**。\n两点由此确定：\n1. 交付槽位就是根目录那两个 0 字节文件 —— 题目不是「补全一个已有实现」，而是**从零实现**；\n2. 题包缺席意味着协议细节只能反推，所以协议层必须做成可替换的，而不是把猜测硬编进引擎。\n「先做不依赖题包的部分」这个决定，后来被上游一次协议改版完全验证：引擎、存储、索引一行未动，只换掉了协议层。",
       "student_quote": "题包目前是占位符，可以先将数据库框架搭起来跑通，等题包发布再测试；同时也可以梳理优化思路",
@@ -1101,7 +1101,7 @@
       "dimension": "独立验证与质疑",
       "hypothesis_author": "student",
       "hypothesis": "题面提到 Docker，未必等于「本地验证必须用 Docker」。把题面里的 Docker 条款分成不可协商的交付形态与可协商的本地开发，才知道哪一部分真的没有选择。",
-      "command": "读 docs/06-加赛赛题-RAGStore.md 第 146 行与第 354 行，把其中所有与 Docker 相关的条款逐条分类",
+      "command": "读 docs/06-加赛赛题-MiniVectorDB.md 第 146 行与第 354 行，把其中所有与 Docker 相关的条款逐条分类",
       "result": "第 146 行：「开发语言和本地操作系统不限，正式运行环境统一为 Linux x86_64 容器。选手提交 Dockerfile，由平台构建并锁定镜像；正式执行时禁止联网，依赖须在构建阶段安装完成并锁定版本。」\n第 354 行：「**Dockerfile**：能够从提交的源码构建并启动评测容器。」",
       "result_excerpt": "第 146 行：「开发语言和本地操作系统不限，正式运行环境统一为 Linux x86_64 容器。",
       "interpretation": "结论是两分法：\n**① 不可协商** —— 评测方只会用提交的 Dockerfile 构建镜像再锁镜像跑用例，没有「非 Docker 提交路径」；源码、Dockerfile 与 `conversation.json` 还必须同一个 commit。\n**② 可协商** —— 开发语言与本地 OS 不限，所以本地写 Rust、编译成二进制、直接用管道喂 SQL 来测，**完全合法**。\n分清这两类的价值在于：**本地不必被 Docker 环境卡住**，而交付形态一步都不让。",
@@ -1256,13 +1256,13 @@
       "向量索引不落盘，启动时重建。题面允许这样做，但重建成本会计入恢复时间。",
       "本材料覆盖的官方验证以 `2026-competition-round2` 分支上已发布的 20 组公开用例为限；上游若在提测前再改协议，本结论需重新验证。",
       "事务语义的覆盖依赖 `protocol_check` 已发布的用例；更细的隔离级别（READ COMMITTED / REPEATABLE READ / SERIALIZABLE）与显式锁语义尚未实现，按约定返回错误。",
-      "检查点阈值默认 64 MiB，可用 `RAGSTORE_CHECKPOINT_MB` 调整。已验证的边界是 200 万行 128 维（数据目录 1104 MiB、峰值内存 1557 MiB，均在 2 GiB 限额内）；再大一档未实测。",
+      "检查点阈值默认 64 MiB，可用 `MINIVECDB_CHECKPOINT_MB` 调整。已验证的边界是 200 万行 128 维（数据目录 1104 MiB、峰值内存 1557 MiB，均在 2 GiB 限额内）；再大一档未实测。",
       "SQL 语法支持严格限于题面 §2.1 与 §2.2 列出的子集（CREATE TABLE / INSERT / SELECT / UPDATE / DELETE / L2_DISTANCE / BEGIN / COMMIT / ROLLBACK / CREATE VECTOR INDEX）。COUNT、DISTINCT、GROUP BY、JOIN、IN、BETWEEN、LIKE、IS NULL、OFFSET 等未实现，按约定返回错误。\n这一边界有明文依据而非推断：题面 §2.1 写着「本题不要求 NULL、JOIN、聚合、子查询、ALTER TABLE、外键、嵌套事务或主键更新。不支持的语句须返回约定错误」，且已逐条实测这 8 类语句确实返回了约定错误、题面「必须支持」的 17 项全部成功。",
       "错误码的冻结映射尚未公布。官方 `protocol_check/config.json` 的 `error_codes` 是空对象，题包 README 写着「正式映射以题包为准」；公开用例只用到 `duplicate_key` / `dimension_mismatch` / `unsupported_sql` 三个名字。本实现覆盖 9 个语义名（`duplicate_key` / `dimension_mismatch` / `unsupported_sql` / `syntax_error` / `no_such_table` / `no_such_column` / `data_error` / `value_out_of_range` / `transaction_state`），但若正式映射使用了不同的名字，仍有失配的可能 —— 这是当前无法通过本地验证消除的不确定性。"
     ]
   },
   "limitations": {
-    "scope": "本材料覆盖 RAGStore（加赛赛题一）从空分支到可提测状态的开发过程，时间跨度 2026-11-09 至 2026-11-11。所有 prompt 均为学生真实输入，所有实验命令均为真实执行过的命令，所有 result 均为真实观察到的输出。",
+    "scope": "本材料覆盖 MiniVectorDB（加赛赛题一）从空分支到可提测状态的开发过程，时间跨度 2026-11-09 至 2026-11-11。所有 prompt 均为学生真实输入，所有实验命令均为真实执行过的命令，所有 result 均为真实观察到的输出。",
     "synthetic": false,
     "authorship": "每一段文字的作者都标在它自己的字段上。\n\n`user_prompts`：`content` 是学生本人的输入，**逐字**来自会话记录，未作删改；`note` 是对这段输入的读法，不是学生的原话。\n\n`conversations`：每个 turn 都有 `role`（`student` 或 `agent`）与 `source`（指向记录里的第几轮）。学生的 turn 是原话，Agent 的 turn 是该轮回答里与判断相关的一段，取自该轮回答的**单个**消息，不是把多段拼接起来的。\n\n`experiments`：每个实例都有 `hypothesis_author`，取 `student` 或 `agent`，指明这个假设是谁提出的。标为 `student` 的，`student_evidence` 指向提出该假设的学生原话（同时给出该 prompt 在本文件中的位置 `prompt_pointer`）；标为 `agent` 的，`student_evidence` 为 null —— 因为该实例没有以学生的发言为起点，把它硬挂到某句学生的话上会是编造。\n\n35 个实验实例中，13 个的假设由学生提出，其余 22 个由 Agent 提出并如实标注为 `agent`。五个维度各自都有学生提出的实例，以免某个维度因证据不足而被判为 null。\n\n**一处去重。** 题面 §3.4.3 要求「同一证据不得跨实例或跨维度重复得分」。本材料早先的版本有 8 个实例引用了同一段学生原话，现版本为每个实例改引同一段发言中**不同的片段**，并保证没有任何两个实例落在同一条 prompt 上。\n**关于假设归属的一处修正。**本材料早先的版本把 `experiments` 里的 `hypothesis` 与 `interpretation` 一并写成了「学生贡献」，但逐条核对会话记录后发现，这些实例的假设与解读多由 Agent 提出，只有一部分实例的假设确实出自学生（例如「ANN改为hash查找，要估算hash表的内存占用」、「这次修复的测试可以覆盖上一次测试」）。现版本按真实记录逐条标注了归属，并把 Agent 的推理放回 `interpretation` 字段 —— 该字段是 Agent 的分析，不计为学生的理解。",
     "missing": [

@@ -171,7 +171,7 @@ student_evidence = null
 
 ## 7. 体积限额：题面写的是 128 KiB，材料按 125 KB 做
 
-题面 `docs/06-加赛赛题-RAGStore.md` §4.4 第 408 行原文：
+题面 `docs/06-加赛赛题-MiniVectorDB.md` §4.4 第 408 行原文：
 
 > 文件须采用 UTF-8 编码、合法 JSON，顶层为对象，大小不超过 **128 KiB**。
 > 超限时拒绝评审，不静默截断。
@@ -225,17 +225,17 @@ student_evidence = null
 
 | 路径 | `d0eed67d3` | `dc3d72ed6` |
 | --- | --- | --- |
-| `ragstore/` 的 tree 哈希 | `0856004a…` | `0856004a…`（相同） |
-| `ragstore/` 35 个文件的 blob | 逐一相同 | 逐一相同 |
+| `minivectordb/` 的 tree 哈希 | `0856004a…` | `0856004a…`（相同） |
+| `minivectordb/` 35 个文件的 blob | 逐一相同 | 逐一相同 |
 | `Dockerfile` 的 blob | 相同 | 相同 |
-| `ragstore/Cargo.toml` / `Cargo.lock` | 相同 | 相同 |
+| `minivectordb/Cargo.toml` / `Cargo.lock` | 相同 | 相同 |
 
 两个 commit 之间全部改动的文件只有 7 个：`conversation.json`（两份）、
 `agent/DIAGNOSIS-agent-prompt.md`、`agent/archive/unscored-instances.json`、
 `tools/build_conversation_json.py`、`tools/check_conversation_json.py`、
 `tools/check_prompt_authorship.py`。
 
-而 `Dockerfile` 只 `COPY ragstore/Cargo.toml` 与 `ragstore/src`，
+而 `Dockerfile` 只 `COPY minivectordb/Cargo.toml` 与 `minivectordb/src`，
 **根本不读 `conversation.json`，也不读 `tools/`**。镜像的输入与 `d0eed67d3`
 完全一致。
 
@@ -306,10 +306,10 @@ def remaining(self, timeout):
 
 ### 9.1 为什么材料不可能是原因（已由 git 定死）
 
-`d0eed67d3` 与 `dc3d72ed6` 的 `ragstore/` **tree 哈希相同**，
+`d0eed67d3` 与 `dc3d72ed6` 的 `minivectordb/` **tree 哈希相同**，
 `Dockerfile`、`Cargo.toml`、`Cargo.lock` 的 blob 也相同；
 两个 commit 之间改动的 7 个文件全是材料与工具。
-而 `Dockerfile` 只 `COPY ragstore/Cargo.toml` 与 `ragstore/src`，
+而 `Dockerfile` 只 `COPY minivectordb/Cargo.toml` 与 `minivectordb/src`，
 **根本不读 `conversation.json`，也不读 `tools/`**——镜像的输入逐字节相同。
 
 题面 §3.4 的顺序也是硬的：「**MySQL case 全部通过后**，由评测 Agent 分析
@@ -329,7 +329,7 @@ def remaining(self, timeout):
 | **2**（`taskset -c 0,1`） | **230.2 s** | **248.4 s** | **41.4%** |
 
 **一个核比两个核，写入慢 22.9%，整例慢 21.2%。**
-`ragstore/src` 里没有 `rayon`、没有 `thread::spawn`、没有
+`minivectordb/src` 里没有 `rayon`、没有 `thread::spawn`、没有
 `available_parallelism`——服务器是单线程的，第二个核唯一的作用是
 **把判题器自己的驱动进程从服务器所在的那个核上挪走**。
 

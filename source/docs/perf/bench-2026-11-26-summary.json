@@ -1,0 +1,89 @@
+{
+  "measured_at": "2026-11-26",
+  "protocol": "the driver and the server are pinned to one core (--cpu 3 --cpus 3); the two builds were measured alternately, five rounds each, twice over",
+  "baseline_commit": "b88e020944f78f1800b8b900300de6b4629d36a0",
+  "current_commit": "dba6ea18de9f92ed306ec860e367db089dc8db3a",
+  "io_counter": "read_bytes + write_bytes (the block device)",
+  "load": {
+    "rows": 10000,
+    "dim": 128,
+    "queries": 1000,
+    "k": 10,
+    "filter_ratio": 0.5,
+    "seed": 42
+  },
+  "results": {
+    "baseline_exact": {
+      "query_t_ms_median": 948.9,
+      "query_t_ms_rounds": [
+        940.6,
+        945.7,
+        957.8,
+        948.9,
+        952.0
+      ],
+      "query_spread_pct": 1.8,
+      "query_peak_rss_kb": 14800,
+      "query_io_bytes": 0,
+      "write_t_ms": 746.021,
+      "write_io_bytes": 11407360,
+      "index_t_ms": 73.037,
+      "recall_filtered": 1.0,
+      "recall_unfiltered": 1.0
+    },
+    "current_exact": {
+      "query_t_ms_median": 428.8,
+      "query_t_ms_rounds": [
+        426.8,
+        428.8,
+        438.3,
+        429.1,
+        428.8
+      ],
+      "query_spread_pct": 2.7,
+      "query_peak_rss_kb": 13744,
+      "query_io_bytes": 0,
+      "write_t_ms": 548.701,
+      "write_io_bytes": 11411456,
+      "index_t_ms": 32.053,
+      "recall_filtered": 1.0,
+      "recall_unfiltered": 1.0
+    },
+    "baseline_ann": {
+      "query_t_ms_median": 2773.5,
+      "query_t_ms_rounds": [
+        2773.5,
+        2816.2,
+        2764.0,
+        2828.0,
+        2760.9
+      ],
+      "query_spread_pct": 2.4,
+      "query_peak_rss_kb": 14820,
+      "query_io_bytes": 0,
+      "write_t_ms": 739.818,
+      "write_io_bytes": 11407360,
+      "index_t_ms": 72.432,
+      "recall_filtered": 1.0,
+      "recall_unfiltered": 1.0
+    },
+    "current_ann": {
+      "query_t_ms_median": 428.3,
+      "query_t_ms_rounds": [
+        427.6,
+        428.3,
+        441.7,
+        426.4,
+        429.6
+      ],
+      "query_spread_pct": 3.6,
+      "query_peak_rss_kb": 13868,
+      "query_io_bytes": 0,
+      "write_t_ms": 547.2,
+      "write_io_bytes": 11411456,
+      "index_t_ms": 33.112,
+      "recall_filtered": 1.0,
+      "recall_unfiltered": 1.0
+    }
+  }
+}

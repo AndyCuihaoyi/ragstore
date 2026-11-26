@@ -171,9 +171,11 @@ def check(path):
     add("图编号连续", figs == list(range(1, len(figs) + 1)), f"图 1–{len(figs)}")
     add("表编号连续", tbls == list(range(1, len(tbls) + 1)), f"表 1–{len(tbls)}")
 
-    # --- 参考文献 ---
+    # --- 参考文献已按要求移除：正文不得残留引用条目或引用角标 ---
     refs = sum(1 for t in caps if re.match(r"^— \[\d+\]", t))
-    add("参考文献条目", refs >= 5, f"{refs} 条")
+    marks = sum(1 for t in caps if re.search(r"\[\d+\]", t))
+    add("参考文献已移除", refs == 0 and marks == 0,
+        f"条目 {refs} 条，角标 {marks} 处")
 
     return results
 
