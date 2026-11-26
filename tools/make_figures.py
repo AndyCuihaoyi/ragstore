@@ -249,37 +249,38 @@ def fig2():
 
 # ---------------------------------------------------------------- 图 3 存储格式
 def fig3():
-    fig, ax = canvas(8.00, 6.80)
-    group(ax, 2, 55, 47, 43, "行目录 meta.dat（每行 48 字节定长记录）")
+    fig, ax = canvas(8.00, 7.60)
+    group(ax, 2, 79, 96, 19, "行目录 meta.dat（每行 48 字节定长记录）")
     fields = [("pk", "i64"), ("col_off", "u64"), ("col_len", "u32"), ("vec_blk", "u32"),
               ("vec_slot", "u32"), ("version", "u32"), ("alive", "u8")]
-    x = 4.5
+    x = 2.6
     for name, ty in fields:
-        box(ax, x, 74, 5.6, 7.0, "%s\n%s" % (name, ty), C_FILL, 7.0)
-        x += 5.95
-    ax.text(25.5, 70.5, "+ 11 字节填充　（示意图，宽度不按字节比例）",
+        box(ax, x, 88.0, 11.5, 6.4, "%s\n%s" % (name, ty), C_FILL, 8.2)
+        x += 13.4
+    ax.text(50, 85.0, "+ 11 字节填充　（示意图，宽度不按字节比例）",
             ha="center", fontsize=F(7.6), color=C_DIM)
-    ax.text(25.5, 65.8, "定长记录 → 同一数据块的条目在文件中连续\n一次系统调用即可读完整个块的行目录",
-            ha="center", va="center", fontsize=F(8.2), color=C_LINE, linespacing=1.6)
+    ax.text(50, 82.0, "定长记录 → 同一数据块的条目在文件中连续；一次系统调用即可读完整个块的行目录",
+            ha="center", va="center", fontsize=F(8.2), color=C_LINE)
 
-    group(ax, 50, 55, 48, 43, "标量行镜像 col.dat（带标签的变长序列）")
-    box(ax, 52, 76, 13, 9.5, "BIGINT\n0x01\n+ 8 B", C_FILL, 7.6)
-    box(ax, 66, 76, 14, 9.5, "VARCHAR\n0x02 + 4 B\n+ UTF-8", C_FILL, 7.6)
-    box(ax, 81, 76, 15, 9.5, "VECTOR\n0x03 + 4 B\n+ dim×4 B", C_FILL, 7.6)
-    box(ax, 52, 68, 44, 6.8,
+    group(ax, 2, 43, 96, 34, "标量行镜像 col.dat（带标签的变长序列）")
+    box(ax, 3.4, 61.0, 12.5, 9.5, "BIGINT\n0x01\n+ 8 B", C_FILL, 7.6)
+    box(ax, 17.4, 61.0, 13.0, 9.5, "VARCHAR\n0x02 + 4 B\n+ UTF-8", C_FILL, 7.6)
+    box(ax, 32.0, 61.0, 14.0, 9.5, "VECTOR\n0x03 + 4 B\n+ dim×4 B", C_FILL, 7.6)
+    box(ax, 3.4, 51.5, 42.5, 6.8,
         "VABOVE　0x04\n向量列在此只留 1 字节占位标记，不存向量负载", C_HOT, 8.4, bold=True)
-    ax.text(74, 63.0, "128 维下：含向量 533 B → 去向量 17 B\n写放大降低 30 倍",
-            ha="center", va="center", fontsize=F(8.4), color=C_LINE, linespacing=1.6)
+    box(ax, 51.0, 51.5, 42.5, 6.8,
+        "128 维下：含向量 533 B → 去向量 17 B\n写放大降低 30 倍", C_ACC, 8.4, bold=True)
+    ax.text(25, 46.5, "行镜像只存标量列，向量负载只存在 vec.dat 里",
+            ha="center", va="center", fontsize=F(8.4), color=C_LINE)
 
-    group(ax, 2, 4, 96, 45, "向量文件 vec.dat 与块内行主序布局")
-    box(ax, 5, 12, 15, 9, "16 B 文件头\nmagic / ver\ndim / block_rows", C_FILL, 7.8)
-    box(ax, 22, 12, 20, 9, "块 0\nslot0：dim 个 f32 连续\nslot1：dim 个 f32 连续", C_ACC, 8)
-    box(ax, 44, 12, 20, 9, "块 1\nslot0 …\n……", C_ACC, 8)
-    box(ax, 66, 12, 14, 9, "块 b\n……", C_ACC, 8)
-    ax.text(5, 8.5, "offset = 16 + ((b × block_rows) + s) × dim × 4",
+    group(ax, 2, 4, 96, 36, "向量文件 vec.dat 与块内行主序布局")
+    box(ax, 5, 22, 15, 9, "16 B 文件头\nmagic / ver\ndim / block_rows", C_FILL, 7.8)
+    box(ax, 21.5, 22, 20, 9, "块 0\nslot0：dim 个 f32 连续\nslot1：dim 个 f32 连续", C_ACC, 8)
+    box(ax, 43, 22, 20, 9, "块 1\nslot0 …\n……", C_ACC, 8)
+    box(ax, 64.5, 22, 14, 9, "块 b\n……", C_ACC, 8)
+    ax.text(5, 18.5, "offset = 16 + ((b × block_rows) + s) × dim × 4",
             ha="left", fontsize=F(8.4), color=C_LINE)
-
-    box(ax, 62, 26, 34, 15,
+    box(ax, 56, 5.5, 40, 11.5,
         "行主序 vs 列主序的量化论证\n"
         "转置 2 MB 块 ≈ 200 μs\n"
         "而它能并行化的 8 行仅省 ≈ 11 μs\n"
@@ -484,9 +485,10 @@ def fig8():
     arrow(ax, (85, 54), (32, 54), "索引建立", lx=58, ly=54)
     arrow(ax, (32, 54), (32, 25), "")
 
-    ax.text(68, 46.5,
-            "召回率由构造保证：向量通道不引入漏召回，重排的输入质量上限因而确定",
-            ha="center", va="center", fontsize=F(8.4), color=C_LINE,
+    ax.text(66, 39.5,
+            "召回率由构造保证：向量通道不引入漏召回\n重排的输入质量上限因而确定",
+            ha="center", va="center", fontsize=F(8.2), color=C_LINE,
+            linespacing=1.5,
             bbox=dict(boxstyle="round,pad=0.4", fc="#f7f9fb", ec=C_DIM, linewidth=0.8))
 
     check_overflow(fig, "fig-8")
@@ -589,8 +591,10 @@ def fig11():
         ax.set_axisbelow(True)
         for s in ("top", "right"):
             ax.spines[s].set_visible(False)
-        ax.text(0.5, 0.94, "中位数之比 " + ratio, transform=ax.transAxes,
-                ha="center", va="top", fontsize=10.5, color="#b45309", fontweight="bold")
+        mid = (sum(b) / len(b) + sum(c) / len(c)) / 2
+        ax.text(3, mid, "中位数之比 " + ratio, ha="center", va="center",
+                fontsize=10.5, color="#b45309", fontweight="bold",
+                bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="none"))
         ax.legend(fontsize=8, frameon=False, loc="lower left")
     fig.subplots_adjust(wspace=0.28, top=0.86, bottom=0.22)
     caption(fig, "图 11  逐轮交错测量：两版本在同协议下交替测量")
