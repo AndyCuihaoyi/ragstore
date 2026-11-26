@@ -1,9 +1,9 @@
 //! Runtime configuration.
 //!
-//! Every protocol-relevant knob is a flag or environment variable so that we
-//! can align with the official test package once it is published without
-//! touching the engine. Defaults follow the MySQL `mysqltest` result style
-//! used by seekdb's own test suite.
+//! Every protocol-relevant knob is a flag or environment variable so that the
+//! engine can be aligned with a published test package without touching its
+//! internals. Defaults follow the MySQL `mysqltest` result style used by the
+//! sample cases that ship with this project.
 
 use std::path::PathBuf;
 

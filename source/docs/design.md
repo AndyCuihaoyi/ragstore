@@ -243,12 +243,13 @@ add an iterative training phase whose cost is hard to bound.
 
 ### The index does not hold the vectors
 
-An index that holds a copy of every vector costs `dim * 4` bytes per row on
-top of the storage: 552 bytes per row at a dimension of 128, which is 550
-megabytes for a million rows. The vectors are already stored, and they are
-read through the block cache anyway. The index therefore holds only the
-identity of a row - its identifier and its primary key, 16 bytes - and the
-search asks the storage for the distance of a row when it needs one.
+An index that holds a copy of every vector costs `dim * 4 + 40` bytes per
+row on top of the storage: 552 bytes per row at a dimension of 128, which
+is 550 megabytes for a million rows. The vectors are already stored, and
+they are read through the block cache anyway. The index therefore holds
+only the identity of a row - its identifier and its primary key, 16 bytes -
+and the search asks the storage for the distance of a row when it needs
+one.
 
 The cell of a row is kept in a dense array, indexed by the row identifier,
 together with the position of the row inside its cell. A row is therefore

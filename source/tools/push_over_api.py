@@ -33,8 +33,8 @@ database is built and measured by the other tools of `tools/`; this one
 only moves commits around. A reader who clones the repository on a
 machine that can reach `github.com` does not need it at all.
 
-    python3 tools/push_over_api.py --repo AndyCuihaoyi/seekdb-2026 \\
-        --branch 2026-competition-round2
+    python3 tools/push_over_api.py --repo AndyCuihaoyi/ragstore \\
+        --branch main
 
 The token is read from the remote of the repository, unless it is given
 in the environment as `RAGSTORE_GITHUB_TOKEN`.

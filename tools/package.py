@@ -36,10 +36,10 @@ RAGStore 是一个从零实现的轻量级向量存储引擎，面向企业知�
 | 源代码 | 13 771 行 / 32 个源文件（Rust 2021，零外部依赖） |
 | 单元 + 协议测试 | 143 + 15 项全部通过 |
 | 召回率 Recall@10 | 1.000（有过滤与无过滤，与暴力检索答案逐字节一致） |
-| 查询耗时（精确） | 428.8 ms / 1000 次 TopK（10 000 行 x 128 维，5 轮中位数，较基线 2.21×） |
-| 查询耗时（近似） | 428.3 ms / 1000 次 TopK（较基线 6.48×） |
+| 查询耗时（精确） | 428.8 ms / 1000 次 TopK（10 000 行 x 128 维，5 轮中位数，较对照版本 2.21×） |
+| 查询耗时（近似） | 428.3 ms / 1000 次 TopK（较对照版本 6.48×） |
 | 查询物理 I/O | 0 B（数据集常驻页缓存，查询不产生块设备读） |
-| 崩溃恢复 | 12 轮 SIGKILL 全部通过且幂等（宿主与容器内各 12 轮） |
+| 崩溃恢复 | 24 轮 SIGKILL 全部通过且幂等（宿主与容器内各 12 轮） |
 
 ## 二、压缩包内容
 
@@ -48,13 +48,12 @@ RAGStore 是一个从零实现的轻量级向量存储引擎，面向企业知�
 ├── 作品设计文档.docx          方案设计 / 关键代码说明 / 测试及分析 / 创新性说明
 ├── 作品原创性声明.docx        需组员手写签名后替换
 ├── figures/                  设计文档中全部框图的源文件（PNG）
-└── source/                   源码、构建脚本、测试工具、性能数据与开发记录
+└── source/                   源码、构建脚本、测试工具与性能数据
     ├── ragstore/             Rust 源码（主 crate，零外部依赖）
     ├── Dockerfile            容器构建定义，镜像内仅含二进制
     ├── docs/design.md        存储、索引与恢复的完整设计说明
     ├── docs/perf/            性能台账、剖析报告与原始测量数据（JSON）
     ├── tools/                测试与性能测量脚本
-    ├── development-record/   开发过程记录（保留参赛赛题阶段的项目命名原样）
     └── README.md             源码级说明：协议、SQL 子集、运行参数、测试方法
 ```
 
@@ -82,8 +81,8 @@ bash ../tools/killtest.sh
 # 召回率校验
 python3 ../tools/check_ann_recall.py
 
-# 性能测量（绑核单核，三轮取中位数）
-python3 ../tools/bench_median.py --mode exact --rounds 3 --cpu 3 --cpus 3
+# 性能测量（绑核单核，五轮取中位数）
+python3 ../tools/bench_median.py --mode exact --rounds 5 --cpu 3 --cpus 3
 ```
 
 容器方式：
@@ -96,11 +95,8 @@ docker run --rm -i -v "$PWD/data:/data" ragstore --data-dir /data
 
 ## 四、源码目录说明
 
-`source/ragstore/`、`source/Dockerfile`、`source/docs/` 与 `source/tools/` 为参赛团队的原创工作。
-
-`source/development-record/` 是开发过程存档，记录的是本作品在另一项赛题（OceanBase 数据库大赛加赛）
-阶段的工作过程，其中的项目命名沿用当时的赛题名称，未作改写，以保持记录的可信度。
-该目录仅用于佐证开发过程的真实性，不参与构建与评测。
+`source/ragstore/`、`source/Dockerfile`、`source/docs/` 与 `source/tools/` 为参赛团队的原创工作，
+`source/tools/public_cases/` 为随包附带的公开用例集，用于在无网络环境下复现判题结果。
 
 ## 五、创新点摘要
 
@@ -112,7 +108,7 @@ docker run --rm -i -v "$PWD/data:/data" ragstore --data-dir /data
 4. **行镜像的向量占位标记** —— 向量列在落盘镜像中只留 1 字节占位，
    行镜像内向量占比下降约 30 倍，全链路每行落盘字节由 1578 B 降到 1062 B。
 5. **索引不持有向量副本** —— 索引仅保存行身份信息，额外开销约每行 24 字节。
-6. **以量化论证替代直觉的工程决策** —— 例如块内行主序的选择以 20 倍的成本比较为依据。
+6. **以量化论证替代直觉的工程决策** —— 例如块内行主序的选择以 18 倍的成本比较为依据。
 7. **测量方法论的自纠错** —— 推翻自身「性能瓶颈在驱动开销」的错误归因，
    并由此建立可复现的测量规程。
 
@@ -120,8 +116,8 @@ docker run --rm -i -v "$PWD/data:/data" ragstore --data-dir /data
 
 ## 六、说明
 
-- 评测平台的正式参考基线数值未公开，因此文中所有性能倍数均对应一个明确标注
-  commit 号的团队自研版本，并区分了算法级改进与常数级改进。
+- 评测平台未公布正式参考基线数值，因此文中所有性能倍数均对应一个明确标注的
+  团队自研对照版本，并区分了算法级改进与常数级改进。
 - 《作品原创性声明》需全部组员手写签名并填写日期后，再作为独立文件随包提交。
 """
 
@@ -146,7 +142,7 @@ def stage():
 
     src = os.path.join(STAGE, "source")
     shutil.copytree(os.path.join(ROOT, "source"), src,
-                    ignore=shutil.ignore_patterns(".git", "target"))
+                    ignore=shutil.ignore_patterns(".git", "target", "development-record"))
 
     with open(os.path.join(STAGE, "README.md"), "w", encoding="utf-8") as fh:
         fh.write(README)

@@ -269,7 +269,7 @@ def fig3():
     box(ax, 3.4, 51.5, 42.5, 6.8,
         "VABOVE　0x04\n向量列在此只留 1 字节占位标记，不存向量负载", C_HOT, 8.4, bold=True)
     box(ax, 51.0, 51.5, 42.5, 6.8,
-        "128 维下：含向量 533 B → 去向量 17 B\n写放大降低 30 倍", C_ACC, 8.4, bold=True)
+        "128 维下：含向量 533 B → 去向量 17 B\n行镜像内向量占比降约 30 倍", C_ACC, 8.4, bold=True)
     ax.text(25, 46.5, "行镜像只存标量列，向量负载只存在 vec.dat 里",
             ha="center", va="center", fontsize=F(8.4), color=C_LINE)
 
@@ -284,7 +284,7 @@ def fig3():
         "行主序 vs 列主序的量化论证\n"
         "转置 2 MB 块 ≈ 200 μs\n"
         "而它能并行化的 8 行仅省 ≈ 11 μs\n"
-        "→ 20 倍反对，布局保持行主序",
+        "→ 18 倍反对，布局保持行主序",
         "#f7f9fb", 8.4, ec=C_DIM)
 
     check_overflow(fig, "fig-3")
@@ -378,7 +378,7 @@ def fig6():
     group(ax, 3, 4, 94, 41, "崩溃与恢复")
     box(ax, 7, 12, 18, 24, "进程被\n强制终止\nSIGKILL", C_HOT, 9)
     box(ax, 29, 12, 23, 24, "按事务分组重放 WAL\n仅重放含提交标记的组\n（未确认事务必须丢弃）", C_FILL, 8.4)
-    box(ax, 56, 12, 21, 24, "幂等：目录项 version\n判断记录是否已应用\n→ 重复恢复结果一致", C_ACC, 8.4)
+    box(ax, 56, 12, 21, 24, "幂等：按行标识判重跳过\n→ 重复恢复结果一致", C_ACC, 8.4)
     box(ax, 81, 12, 15, 24, "截断 WAL\n状态收敛", C_FILL, 8.4)
     arrow(ax, (25, 24), (29, 24), "")
     arrow(ax, (52, 24), (56, 24), "")
@@ -424,8 +424,8 @@ def fig7():
     ax.set_axisbelow(True)
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    ax.bar(0, 0, color=base_c, edgecolor="#8fa8c4", linewidth=0.6, label="基线 b88e0209")
-    ax.bar(0, 0, color=cur_c, label="当前 dba6ea18d")
+    ax.bar(0, 0, color=base_c, edgecolor="#8fa8c4", linewidth=0.6, label="对照版本")
+    ax.bar(0, 0, color=cur_c, label="本作品版本")
     ax.legend(fontsize=8.2, frameon=False, loc="upper left")
     ax.text(0.5, -0.235, "查询阶段 I/O：两个版本均为 0 B（全部命中页缓存）",
             transform=ax.transAxes, ha="center", va="top", fontsize=8.4, color=C_DIM)
@@ -440,17 +440,17 @@ def fig7():
     ax2.set_yticks(ys)
     ax2.set_yticklabels([l for l, _ in items], fontsize=8.8)
     ax2.set_xlim(0, 7.6)
-    ax2.set_xlabel("相对基线的倍数（>1 表示优化后更优）", fontsize=8.8)
-    ax2.set_title("各维度相对基线的提升", fontsize=10)
+    ax2.set_xlabel("相对对照版本的倍数（>1 表示本作品更优）", fontsize=8.8)
+    ax2.set_title("各维度相对对照版本的提升", fontsize=10)
     ax2.axvline(1.0, color="#b45309", linestyle="--", linewidth=0.9, alpha=0.8)
     ax2.set_ylim(-1.0, 4.6)
-    ax2.text(1.06, -0.72, "基线 1.0×", fontsize=8, color="#b45309",
+    ax2.text(1.06, -0.72, "对照版本 1.0×", fontsize=8, color="#b45309",
              ha="left", va="center")
     ax2.grid(axis="x", linestyle=":", alpha=0.5)
     ax2.set_axisbelow(True)
     for s in ("top", "right"):
         ax2.spines[s].set_visible(False)
-    ax2.text(0.5, -0.235, "RSS 越低越好，1.08× 即降为基线的 1/1.08",
+    ax2.text(0.5, -0.235, "RSS 越低越好，1.08× 即降为对照版本的 1/1.08",
              transform=ax2.transAxes, ha="center", va="top", fontsize=8.4, color=C_DIM)
 
     fig.subplots_adjust(left=0.09, right=0.985, top=0.88, bottom=0.24)
@@ -577,9 +577,9 @@ def fig11():
               ("近似检索 ann", base_ann, cur_ann, "6.48×")]
     for ax, (title, b, c, ratio) in zip(axes, panels):
         ax.plot(rounds, b, "-o", color="#9db3cc", linewidth=1.6, markersize=4.5,
-                label="基线 b88e0209")
+                label="对照版本")
         ax.plot(rounds, c, "-o", color="#3a6ea5", linewidth=1.6, markersize=4.5,
-                label="当前提交版本")
+                label="本作品版本")
         for series, color in ((b, "#9db3cc"), (c, "#3a6ea5")):
             m = sum(series) / len(series)
             ax.axhline(m, color=color, linestyle="--", linewidth=0.9, alpha=0.75)

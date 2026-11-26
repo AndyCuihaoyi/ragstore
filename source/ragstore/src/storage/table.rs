@@ -112,10 +112,11 @@ pub enum ColValue {
 
 /// Row directory entry, fixed size.
 ///
-/// The `version` field makes the replay of the write-ahead log idempotent: a
-/// record that has already been applied carries a version that is not newer
-/// than the one stored here, so it is skipped. That is what allows the log to
-/// be replayed after a crash without duplicating rows.
+/// The `version` field counts the updates of the row. It takes part in no
+/// decision: the idempotency of the replay of the write-ahead log comes from
+/// skipping an insert whose row identifier is already present, from
+/// overwriting the directory entry on an update, and from truncating the log
+/// at the end of the replay.
 #[derive(Debug, Clone, Copy)]
 pub struct RowMeta {
     pub pk: i64,

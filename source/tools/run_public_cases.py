@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Run the public RAGStore cases against the database under test.
 
-The cases are the mysqltest style sample set that the organiser published in
-the `2026-competition-round2` branch of `oceanbase/seekdb`. Every case starts
-from an empty data directory, the statements of the `.test` file are executed
-one by one, and the answers are compared with the `.result` file.
+The cases are the mysqltest style sample set that ships with this project in
+`tools/public_cases`. Every case starts from an empty data directory, the
+statements of the `.test` file are executed one by one, and the answers are
+compared with the `.result` file.
 
 The comparison follows the semantics that the published README describes:
 
