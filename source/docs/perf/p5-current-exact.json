@@ -1,0 +1,158 @@
+{
+  "io_counter": "read_bytes + write_bytes (the block device)",
+  "mode": "exact",
+  "protocol": "the driver and the server are pinned to one core",
+  "queries": 1000,
+  "query_io_bytes": 0,
+  "query_peak_rss_kb": 11896,
+  "query_t_ms": 323.506,
+  "recall_filtered": 1.0,
+  "recall_unfiltered": 1.0,
+  "rounds": 5,
+  "rows": 10000,
+  "runs": [
+    {
+      "config": {
+        "batch": 100,
+        "dim": 128,
+        "filter_ratio": 0.5,
+        "k": 10,
+        "mode": "exact",
+        "queries": 1000,
+        "rows": 10000,
+        "seed": 42
+      },
+      "index": {
+        "t_ms": 59.9
+      },
+      "query": {
+        "io_bytes": 0,
+        "peak_rss_kb": 11728,
+        "recall_filtered": 1.0,
+        "recall_unfiltered": 1.0,
+        "sample_size": 20,
+        "t_ms": 323.506
+      },
+      "write": {
+        "io_bytes": 11407360,
+        "peak_rss_kb": 3992,
+        "t_ms": 566.383
+      }
+    },
+    {
+      "config": {
+        "batch": 100,
+        "dim": 128,
+        "filter_ratio": 0.5,
+        "k": 10,
+        "mode": "exact",
+        "queries": 1000,
+        "rows": 10000,
+        "seed": 42
+      },
+      "index": {
+        "t_ms": 61.945
+      },
+      "query": {
+        "io_bytes": 0,
+        "peak_rss_kb": 11896,
+        "recall_filtered": 1.0,
+        "recall_unfiltered": 1.0,
+        "sample_size": 20,
+        "t_ms": 330.633
+      },
+      "write": {
+        "io_bytes": 11407360,
+        "peak_rss_kb": 3892,
+        "t_ms": 568.966
+      }
+    },
+    {
+      "config": {
+        "batch": 100,
+        "dim": 128,
+        "filter_ratio": 0.5,
+        "k": 10,
+        "mode": "exact",
+        "queries": 1000,
+        "rows": 10000,
+        "seed": 42
+      },
+      "index": {
+        "t_ms": 59.609
+      },
+      "query": {
+        "io_bytes": 0,
+        "peak_rss_kb": 11920,
+        "recall_filtered": 1.0,
+        "recall_unfiltered": 1.0,
+        "sample_size": 20,
+        "t_ms": 325.298
+      },
+      "write": {
+        "io_bytes": 11407360,
+        "peak_rss_kb": 4036,
+        "t_ms": 561.648
+      }
+    },
+    {
+      "config": {
+        "batch": 100,
+        "dim": 128,
+        "filter_ratio": 0.5,
+        "k": 10,
+        "mode": "exact",
+        "queries": 1000,
+        "rows": 10000,
+        "seed": 42
+      },
+      "index": {
+        "t_ms": 59.727
+      },
+      "query": {
+        "io_bytes": 0,
+        "peak_rss_kb": 11920,
+        "recall_filtered": 1.0,
+        "recall_unfiltered": 1.0,
+        "sample_size": 20,
+        "t_ms": 323.116
+      },
+      "write": {
+        "io_bytes": 11407360,
+        "peak_rss_kb": 3832,
+        "t_ms": 567.486
+      }
+    },
+    {
+      "config": {
+        "batch": 100,
+        "dim": 128,
+        "filter_ratio": 0.5,
+        "k": 10,
+        "mode": "exact",
+        "queries": 1000,
+        "rows": 10000,
+        "seed": 42
+      },
+      "index": {
+        "t_ms": 59.216
+      },
+      "query": {
+        "io_bytes": 0,
+        "peak_rss_kb": 11736,
+        "recall_filtered": 1.0,
+        "recall_unfiltered": 1.0,
+        "sample_size": 20,
+        "t_ms": 321.643
+      },
+      "write": {
+        "io_bytes": 11407360,
+        "peak_rss_kb": 3988,
+        "t_ms": 559.619
+      }
+    }
+  ],
+  "write_io_bytes": 11407360,
+  "write_peak_rss_kb": 3988,
+  "write_t_ms": 566.383
+}

@@ -1,0 +1,158 @@
+{
+  "io_counter": "read_bytes + write_bytes (the block device); the old rchar+wchar counted the traffic of the pipe",
+  "mode": "exact",
+  "protocol": "the driver and the server are pinned to one core; the judge runs the container with --cpus=2, and on this machine the numbers of two cores are three times the numbers of one core, because the two halves of the driver and the server fight over the cache of the core they share",
+  "queries": 1000,
+  "query_io_bytes": 0,
+  "query_peak_rss_kb": 14800,
+  "query_t_ms": 969.189,
+  "recall_filtered": 1.0,
+  "recall_unfiltered": 1.0,
+  "rounds": 5,
+  "rows": 10000,
+  "runs": [
+    {
+      "config": {
+        "batch": 100,
+        "dim": 128,
+        "filter_ratio": 0.5,
+        "k": 10,
+        "mode": "exact",
+        "queries": 1000,
+        "rows": 10000,
+        "seed": 42
+      },
+      "index": {
+        "t_ms": 72.882
+      },
+      "query": {
+        "io_bytes": 0,
+        "peak_rss_kb": 14696,
+        "recall_filtered": 1.0,
+        "recall_unfiltered": 1.0,
+        "sample_size": 20,
+        "t_ms": 968.634
+      },
+      "write": {
+        "io_bytes": 11407360,
+        "peak_rss_kb": 3856,
+        "t_ms": 751.424
+      }
+    },
+    {
+      "config": {
+        "batch": 100,
+        "dim": 128,
+        "filter_ratio": 0.5,
+        "k": 10,
+        "mode": "exact",
+        "queries": 1000,
+        "rows": 10000,
+        "seed": 42
+      },
+      "index": {
+        "t_ms": 73.506
+      },
+      "query": {
+        "io_bytes": 0,
+        "peak_rss_kb": 14824,
+        "recall_filtered": 1.0,
+        "recall_unfiltered": 1.0,
+        "sample_size": 20,
+        "t_ms": 969.189
+      },
+      "write": {
+        "io_bytes": 11407360,
+        "peak_rss_kb": 3984,
+        "t_ms": 753.981
+      }
+    },
+    {
+      "config": {
+        "batch": 100,
+        "dim": 128,
+        "filter_ratio": 0.5,
+        "k": 10,
+        "mode": "exact",
+        "queries": 1000,
+        "rows": 10000,
+        "seed": 42
+      },
+      "index": {
+        "t_ms": 73.6
+      },
+      "query": {
+        "io_bytes": 0,
+        "peak_rss_kb": 14700,
+        "recall_filtered": 1.0,
+        "recall_unfiltered": 1.0,
+        "sample_size": 20,
+        "t_ms": 961.384
+      },
+      "write": {
+        "io_bytes": 11407360,
+        "peak_rss_kb": 3860,
+        "t_ms": 744.675
+      }
+    },
+    {
+      "config": {
+        "batch": 100,
+        "dim": 128,
+        "filter_ratio": 0.5,
+        "k": 10,
+        "mode": "exact",
+        "queries": 1000,
+        "rows": 10000,
+        "seed": 42
+      },
+      "index": {
+        "t_ms": 73.771
+      },
+      "query": {
+        "io_bytes": 0,
+        "peak_rss_kb": 14812,
+        "recall_filtered": 1.0,
+        "recall_unfiltered": 1.0,
+        "sample_size": 20,
+        "t_ms": 973.387
+      },
+      "write": {
+        "io_bytes": 11407360,
+        "peak_rss_kb": 3972,
+        "t_ms": 768.381
+      }
+    },
+    {
+      "config": {
+        "batch": 100,
+        "dim": 128,
+        "filter_ratio": 0.5,
+        "k": 10,
+        "mode": "exact",
+        "queries": 1000,
+        "rows": 10000,
+        "seed": 42
+      },
+      "index": {
+        "t_ms": 73.365
+      },
+      "query": {
+        "io_bytes": 0,
+        "peak_rss_kb": 14800,
+        "recall_filtered": 1.0,
+        "recall_unfiltered": 1.0,
+        "sample_size": 20,
+        "t_ms": 969.514
+      },
+      "write": {
+        "io_bytes": 11407360,
+        "peak_rss_kb": 3960,
+        "t_ms": 747.115
+      }
+    }
+  ],
+  "write_io_bytes": 11407360,
+  "write_peak_rss_kb": 3960,
+  "write_t_ms": 751.424
+}
