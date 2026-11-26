@@ -108,6 +108,14 @@ def repeat_header(row):
     trPr.append(el)
 
 
+def keep_row_together(row):
+    """禁止表格行跨页断开，避免同一行被拆到两页。"""
+    trPr = row._tr.get_or_add_trPr()
+    el = OxmlElement("w:cantSplit")
+    el.set(qn("w:val"), "true")
+    trPr.append(el)
+
+
 def has_sectpr(p):
     pPr = p._p.find(qn("w:pPr"))
     return pPr is not None and pPr.find(qn("w:sectPr")) is not None
@@ -223,6 +231,7 @@ class Writer:
         repeat_header(table.rows[0])
 
         for i, row in enumerate(rows):
+            keep_row_together(table.rows[i + 1])
             for j, text in enumerate(row):
                 cell = table.cell(i + 1, j)
                 cell.text = ""

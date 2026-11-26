@@ -3,10 +3,14 @@
 """生成作品设计文档所需的全部框图。
 
 用法: python tools/make_figures.py
-输出: docs/figures/fig-1..fig-7.png
+输出: docs/figures/fig-1..fig-8.png
+
+图在 Word 中按 15 cm 栏宽插入；画布宽 8 in，故把画布内字号统一放大 1.15 倍，
+最终落在纸面上约 7.6 pt，可读。
 """
 import os
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Rectangle
@@ -23,8 +27,6 @@ C_ACC = "#d6e4f2"
 C_HOT = "#fbe4e0"
 C_DIM = "#6b7280"
 
-# 图在 Word 中按 15 cm 栏宽插入；画布 8 in ⇒ 缩放系数 0.738，
-# 因此把画布内字号放大 1.15 倍，最终落在纸面上约 7.6 pt，可读。
 FONT_SCALE = 1.15
 
 
@@ -40,13 +42,13 @@ def canvas(w, h):
     return fig, ax
 
 
-def box(ax, x, y, w, h, text, fill=C_FILL, fs=F(9), bold=False, ls="-", ec=C_LINE):
+def box(ax, x, y, w, h, text, fill=C_FILL, fs=9, bold=False, ls="-", ec=C_LINE):
     ax.add_patch(FancyBboxPatch(
         (x, y), w, h,
         boxstyle="round,pad=0.3,rounding_size=1.0",
         linewidth=1.1, edgecolor=ec, facecolor=fill, linestyle=ls))
     ax.text(x + w / 2, y + h / 2, text, ha="center", va="center",
-            fontsize=fs, fontweight="bold" if bold else "normal", color=C_LINE,
+            fontsize=F(fs), fontweight="bold" if bold else "normal", color=C_LINE,
             linespacing=1.6)
 
 
@@ -57,18 +59,32 @@ def group(ax, x, y, w, h, label):
             fontsize=F(8.5), color=C_DIM, fontweight="bold")
 
 
-def arrow(ax, p1, p2, label=None, lx=None, ly=None, fs=F(8), color=C_LINE,
-          rad=0.0, ha="center"):
+ROUTES = {
+    "hv": "angle,angleA=90,angleB=0,rad=6",
+    "vh": "angle,angleA=0,angleB=90,rad=6",
+}
+
+
+def arrow(ax, p1, p2, label=None, lx=None, ly=None, fs=8, color=C_LINE,
+          rad=0.0, ha="center", route=None):
+    """连接线。
+
+    route=None 画直线（仅用于两点同轴的情况）；
+    route="hv" 先竖后横、"vh" 先横后竖，正交折线带圆角。
+    标签一律带不透明遮罩，避免压在线条上。
+    """
+    cs = ROUTES[route] if route else "arc3,rad=%g" % rad
     ax.add_patch(FancyArrowPatch(p1, p2, arrowstyle="-|>", mutation_scale=10,
                                  linewidth=1.0, color=color,
-                                 connectionstyle=f"arc3,rad={rad}",
+                                 connectionstyle=cs,
                                  shrinkA=0, shrinkB=0))
     if label:
         if lx is None:
             lx = (p1[0] + p2[0]) / 2
         if ly is None:
             ly = (p1[1] + p2[1]) / 2
-        ax.text(lx, ly, label, ha=ha, va="center", fontsize=fs, color=C_LINE)
+        ax.text(lx, ly, label, ha=ha, va="center", fontsize=F(fs), color=C_LINE,
+                bbox=dict(boxstyle="round,pad=0.18", fc="white", ec="none"))
 
 
 def caption(fig, text):
@@ -85,46 +101,43 @@ def save(fig, name):
 
 # ---------------------------------------------------------------- 图 1 系统总体架构
 def fig1():
-    fig, ax = canvas(8.00, 5.67)
-    group(ax, 3, 82, 94, 16, "应用层")
-    box(ax, 7, 85.5, 26, 9, "企业知识库 RAG 检索\n（文档入库 / 召回 / 重排）", C_ACC, 9)
-    box(ax, 37, 85.5, 26, 9, "AI Agent 长期记忆\n（会话语义检索）", C_ACC, 9)
-    box(ax, 67, 85.5, 26, 9, "判题驱动 / 压测客户端\n（JSON Lines）", C_ACC, 9)
+    fig, ax = canvas(8.00, 5.90)
+    group(ax, 3, 84, 94, 15, "应用层")
+    box(ax, 12, 86.5, 24, 8.5, "企业知识库 RAG 检索\n（文档入库 / 召回 / 重排）", C_ACC, 8.5)
+    box(ax, 42, 86.5, 24, 8.5, "AI Agent 长期记忆\n（会话语义检索）", C_FILL, 8.5)
+    box(ax, 71, 86.5, 24, 8.5, "判题驱动 / 压测客户端\n（JSON Lines）", C_FILL, 8.5)
 
-    group(ax, 3, 63, 94, 15, "接口层")
-    box(ax, 8, 65.5, 34, 9.5, "SQL 词法与语法分析\nsql/lexer.rs　sql/parser.rs", C_FILL, 8.5)
-    box(ax, 56, 65.5, 36, 9.5, "协议层：JSON Lines\nproto/json.rs　proto/session.rs", C_FILL, 8.5)
+    group(ax, 3, 66, 94, 14, "接口层")
+    box(ax, 12, 68, 39, 9.0, "SQL 词法与语法分析\nsql/lexer.rs　sql/parser.rs", C_FILL, 8.2)
+    box(ax, 57, 68, 38, 9.0, "协议层：JSON Lines\nproto/json.rs　proto/session.rs", C_FILL, 8.2)
 
-    group(ax, 3, 38, 94, 21, "引擎层")
-    box(ax, 6, 46, 28, 9.5, "通用执行器（流式投影）\nexec/query.rs", C_FILL, 8.5)
-    box(ax, 36, 46, 28, 9.5, "向量检索\nexact.rs　ann.rs", C_ACC, 9, bold=True)
-    box(ax, 66, 46, 28, 9.5, "事务缓冲与语句级撤销\nengine.rs", C_FILL, 8.5)
-    box(ax, 18, 39.5, 64, 5.5, "TopK 堆　过滤下推　距离内核（AVX2）", "#f7f9fb", 8.5)
+    group(ax, 3, 42, 94, 20, "引擎层")
+    box(ax, 12, 52, 26, 9.0, "通用执行器（流式投影）\nexec/query.rs", C_FILL, 8.2)
+    box(ax, 41, 52, 26, 9.0, "向量检索\nexact.rs　ann.rs", C_ACC, 8.6, bold=True)
+    box(ax, 70, 52, 25, 9.0, "事务缓冲与语句级撤销\nengine.rs", C_FILL, 8.2)
+    box(ax, 20, 44, 68, 6.5, "TopK 堆　过滤下推　距离内核（AVX2）", "#f7f9fb", 8.5)
 
-    group(ax, 3, 13, 94, 21, "存储层")
-    box(ax, 6, 21, 28, 9.5, "块缓存缓冲池\nbufferpool.rs\n三类缓存共享预算", C_FILL, 8)
-    box(ax, 36, 21, 28, 9.5, "列式存储\ntable.rs　format.rs\nmeta.dat　col.dat　vec.dat", C_ACC, 8, bold=True)
-    box(ax, 66, 21, 28, 9.5, "预写日志 WAL\nwal.rs\n完整行镜像 · 提交标记分组重放", C_FILL, 8)
-    box(ax, 18, 14.5, 64, 5.0, "IVF 倒排索引（驻留内存，启动时重建）", "#f7f9fb", 8.5)
+    group(ax, 3, 15, 94, 21, "存储层")
+    box(ax, 12, 18.5, 26, 13.5, "块缓存缓冲池\nbufferpool.rs\n三类缓存共享预算", C_FILL, 8.2)
+    box(ax, 41, 18.5, 26, 13.5,
+        "列式存储 + IVF 倒排索引\ntable.rs　format.rs\nmeta.dat　col.dat　vec.dat\n索引驻留内存，启动时重建",
+        C_ACC, 7.8, bold=True)
+    box(ax, 70, 18.5, 25, 13.5, "预写日志 WAL\nwal.rs\n完整行镜像\n提交标记分组重放", C_FILL, 7.8)
 
-    group(ax, 3, 2, 94, 8, "持久层")
-    box(ax, 20, 3.2, 60, 5.4, "文件系统　/data　（单进程单客户端，容器化部署）", "#f3f4f6", 9)
+    group(ax, 3, 3, 94, 9, "持久层")
+    box(ax, 20, 4.2, 60, 5.6, "文件系统　/data　（单进程单客户端，容器化部署）", "#f3f4f6", 8.8)
 
-    arrow(ax, (20, 85.5), (20, 75), "SQL", lx=16.5, ly=80.2)
-    arrow(ax, (50, 85.5), (50, 75), "SQL", lx=46.5, ly=80.2)
-    arrow(ax, (80, 85.5), (74, 75), "JSONL", lx=84, ly=80.2)
-    arrow(ax, (25, 65.5), (20, 55.5), "DML", lx=17.5, ly=60.4)
-    arrow(ax, (74, 65.5), (50, 55.5), "请求", lx=69, ly=60.4)
-    arrow(ax, (20, 46), (30, 45.2), "", rad=0.25)
-    arrow(ax, (50, 46), (50, 45.2), "")
-    arrow(ax, (80, 46), (72, 45.2), "", rad=-0.25)
-    arrow(ax, (30, 45.2), (20, 30.5), "读块", lx=15.5, ly=37.5)
-    arrow(ax, (50, 45.2), (50, 30.5), "")
-    arrow(ax, (70, 45.2), (80, 30.5), "WAL 追加", lx=86.5, ly=37.5)
-    arrow(ax, (20, 30.5), (35, 17), "", rad=-0.2)
-    arrow(ax, (50, 30.5), (50, 19.5), "")
-    arrow(ax, (80, 30.5), (65, 17), "", rad=0.2)
-    arrow(ax, (50, 14.5), (50, 8.6), "刷盘", lx=56, ly=11.6)
+    arrow(ax, (19, 86.5), (19, 77), "SQL", lx=14.5, ly=82)
+    arrow(ax, (54, 86.5), (54, 77), "SQL", lx=49.5, ly=82)
+    arrow(ax, (83, 86.5), (83, 77), "JSONL", lx=88, ly=82)
+    arrow(ax, (30, 68), (30, 61), "DML", lx=25.5, ly=64)
+    arrow(ax, (70, 68), (70, 64), "")
+    arrow(ax, (70, 64), (54, 64), "请求", lx=62, ly=64)
+    arrow(ax, (54, 64), (54, 61), "")
+    arrow(ax, (24, 44), (24, 32), "读块", lx=16.5, ly=38)
+    arrow(ax, (54, 44), (54, 32), "")
+    arrow(ax, (82, 44), (82, 32), "WAL 追加", lx=89, ly=38)
+    arrow(ax, (54, 18.5), (54, 9.8), "刷盘", lx=60, ly=14)
 
     caption(fig, "图 1  RAGStore 系统总体架构")
     save(fig, "fig-1-architecture.png")
@@ -154,7 +167,9 @@ def fig2():
     box(ax, 3, 2, 94, 12, "宿主机块设备 / 操作系统页缓存\n（平台以 cgroup v2 的 io.stat 统计字节数；查询阶段实际无物理 I/O）", "#f3f4f6", 8.5)
 
     arrow(ax, (33, 79), (42, 79), "")
-    arrow(ax, (52, 58), (40, 42), "落盘", lx=53, ly=50)
+    arrow(ax, (50, 59), (50, 52), "")
+    arrow(ax, (50, 52), (38, 52), "落盘", lx=44, ly=52)
+    arrow(ax, (38, 52), (38, 42), "")
     arrow(ax, (56, 21), (56, 14), "")
 
     caption(fig, "图 2  部署拓扑与持久化路径")
@@ -163,13 +178,13 @@ def fig2():
 
 # ---------------------------------------------------------------- 图 3 存储格式
 def fig3():
-    fig, ax = canvas(8.00, 4.95)
+    fig, ax = canvas(8.00, 6.80)
     group(ax, 2, 55, 47, 43, "行目录 meta.dat（每行 48 字节定长记录）")
     fields = [("pk", "i64"), ("col_off", "u64"), ("col_len", "u32"), ("vec_blk", "u32"),
               ("vec_slot", "u32"), ("version", "u32"), ("alive", "u8")]
     x = 4.5
     for name, ty in fields:
-        box(ax, x, 74, 5.6, 7.0, f"{name}\n{ty}", C_FILL, 7.0)
+        box(ax, x, 74, 5.6, 7.0, "%s\n%s" % (name, ty), C_FILL, 7.0)
         x += 5.95
     ax.text(25.5, 70.5, "+ 11 字节填充　（示意图，宽度不按字节比例）",
             ha="center", fontsize=F(7.6), color=C_DIM)
@@ -205,7 +220,7 @@ def fig3():
 
 # ---------------------------------------------------------------- 图 4 缓冲池
 def fig4():
-    fig, ax = canvas(8.00, 4.07)
+    fig, ax = canvas(8.00, 5.60)
     group(ax, 3, 54, 94, 42, "缓冲池（--buffer-pool-mb 是三个缓存的合计预算）")
     box(ax, 7, 63, 26, 26, "向量缓存\n（块内解码为 f32 矩阵）\n预算 50%\n\n512 KB / 块\n（1024 行 × 128 维）", C_ACC, 8.5)
     box(ax, 37, 63, 26, 26, "行目录缓存\n（48 B 定长记录数组）\n预算 25%\n\n按块整体换入换出", C_FILL, 8.5)
@@ -227,7 +242,7 @@ def fig4():
 
 # ---------------------------------------------------------------- 图 5 向量检索流程
 def fig5():
-    fig, ax = canvas(8.00, 4.80)
+    fig, ax = canvas(8.00, 6.60)
     box(ax, 5, 84, 30, 11, "SQL 语句\nORDER BY L2_DISTANCE(...) ASC\nLIMIT k", C_FILL, 8.5)
     box(ax, 42, 84, 32, 11, "识别：单升序 L2_DISTANCE + LIMIT\n→ 走向量检索路径", C_ACC, 8.5)
     box(ax, 80, 84, 15, 11, "否则走\n通用执行器", C_FILL, 8)
@@ -254,17 +269,17 @@ def fig5():
         "→ 剪枝后答案与暴力扫描逐字节一致",
         C_ACC, 8.2)
 
-    box(ax, 5, 30, 90, 9,
+    box(ax, 5, 28, 90, 9,
         "TopK 堆（容量 ≤ k）：最差候选置于堆顶，新候选一次比较即可淘汰\n"
         "距离相同按主键升序破平 —— 与 SQL 的 ORDER BY 语义一致",
         "#f7f9fb", 8.5)
-    arrow(ax, (26, 43), (26, 39), "")
-    arrow(ax, (74, 43), (74, 39), "")
+    arrow(ax, (26, 43), (26, 37), "")
+    arrow(ax, (74, 43), (74, 37), "")
 
-    box(ax, 5, 16, 42, 11, "事务内未提交行不在存储中\n→ 单独度量后并入答案", C_FILL, 8.2)
-    box(ax, 53, 16, 42, 11, "索引不持有向量：仅存行标识与主键（16 B/行）\n需要距离时向存储层索取", C_FILL, 8.2)
-    arrow(ax, (40, 30), (26, 27), "并入")
-    arrow(ax, (60, 30), (74, 27), "读取")
+    box(ax, 5, 13, 42, 11, "事务内未提交行不在存储中\n→ 单独度量后并入答案", C_FILL, 8.2)
+    box(ax, 53, 13, 42, 11, "索引不持有向量：仅存行标识与主键（16 B/行）\n需要距离时向存储层索取", C_FILL, 8.2)
+    arrow(ax, (26, 28), (26, 24), "并入", lx=32, ly=26)
+    arrow(ax, (74, 28), (74, 24), "读取", lx=80, ly=26)
 
     box(ax, 5, 4, 90, 8.5, "结果：Recall@10 有过滤 / 无过滤 = 1.0（由精确剪枝保证，非调参所得）", C_ACC, 9, bold=True)
 
@@ -292,7 +307,9 @@ def fig6():
     arrow(ax, (25, 24), (29, 24), "")
     arrow(ax, (52, 24), (56, 24), "")
     arrow(ax, (77, 24), (81, 24), "")
-    arrow(ax, (88, 60), (16, 36), "崩溃", lx=42, ly=49, ha="center")
+    arrow(ax, (88, 60), (88, 48), "")
+    arrow(ax, (88, 48), (16, 48), "崩溃", lx=52, ly=48)
+    arrow(ax, (16, 48), (16, 36), "")
 
     caption(fig, "图 6  事务、日志与崩溃恢复流程")
     save(fig, "fig-6-transaction-recovery.png")
@@ -311,22 +328,57 @@ def fig7():
                       color=["#c9d6e5", "#4a7fb5"])
         for r, v in zip(bars, (before, after)):
             ax.text(r.get_x() + r.get_width() / 2, v * 1.04, fmt.format(v),
-                    ha="center", va="bottom", fontsize=F(9))
+                    ha="center", va="bottom", fontsize=9)
         ax.set_xticks([0, 1])
-        ax.set_xticklabels(["基线\nb88e0209", "优化后\n当前 HEAD"], fontsize=F(8.5))
-        ax.set_title(title, fontsize=F(10))
+        ax.set_xticklabels(["基线\nb88e0209", "优化后\n当前提交版本"], fontsize=8.5)
+        ax.set_title(title, fontsize=10)
         ax.set_ylim(0, max(before, after) * 1.30)
         ax.grid(axis="y", linestyle=":", alpha=0.55)
         ax.set_axisbelow(True)
         for s in ("top", "right"):
             ax.spines[s].set_visible(False)
         ax.text(0.5, 0.93, ratio, transform=ax.transAxes, ha="center",
-                fontsize=F(12), color="#b45309", fontweight="bold")
+                fontsize=12, color="#b45309", fontweight="bold")
     fig.subplots_adjust(wspace=0.32, top=0.86, bottom=0.20)
-    caption(fig, "图 7  优化前后性能对比（10 000 行 × 128 维 × 1000 次 TopK 查询，取三轮中位数）")
+    caption(fig, "图 7  优化前后性能对比")
     save(fig, "fig-7-perf-compare.png")
 
 
+# ---------------------------------------------------------------- 图 8 RAG 两阶段工作流
+def fig8():
+    fig, ax = canvas(8.00, 4.70)
+    group(ax, 3, 58, 94, 39, "离线索引阶段")
+    box(ax, 6, 67, 20, 13, "文档加载", C_FILL, 8.5)
+    box(ax, 29, 67, 20, 13, "切割\nChunking", C_FILL, 8.5)
+    box(ax, 52, 67, 20, 13, "向量化\nEmbedding", C_FILL, 8.5)
+    box(ax, 75, 67, 20, 13, "写入向量存储\nRAGStore", C_ACC, 8.5, bold=True)
+    arrow(ax, (26, 73.5), (29, 73.5), "")
+    arrow(ax, (49, 73.5), (52, 73.5), "")
+    arrow(ax, (72, 73.5), (75, 73.5), "")
+
+    group(ax, 3, 4, 94, 45, "在线查询阶段")
+    box(ax, 4, 12, 17, 13, "问题向量化", C_FILL, 8.2)
+    box(ax, 24, 12, 17, 13, "向量召回\nRAGStore", C_ACC, 8.2, bold=True)
+    box(ax, 44, 12, 17, 13, "重排\nCross-Encoder", C_FILL, 8.2)
+    box(ax, 64, 12, 15, 13, "提示构造", C_FILL, 8.2)
+    box(ax, 82, 12, 15, 13, "生成回答", C_FILL, 8.2)
+    arrow(ax, (21, 18.5), (24, 18.5), "")
+    arrow(ax, (41, 18.5), (44, 18.5), "")
+    arrow(ax, (61, 18.5), (64, 18.5), "")
+    arrow(ax, (79, 18.5), (82, 18.5), "")
+
+    arrow(ax, (85, 67), (85, 54), "")
+    arrow(ax, (85, 54), (32, 54), "索引建立", lx=58, ly=54)
+    arrow(ax, (32, 54), (32, 25), "")
+
+    ax.text(68, 46.5,
+            "召回率由构造保证：向量通道不引入漏召回，重排的输入质量上限因而确定",
+            ha="center", va="center", fontsize=F(8.4), color=C_LINE,
+            bbox=dict(boxstyle="round,pad=0.4", fc="#f7f9fb", ec=C_DIM, linewidth=0.8))
+
+    caption(fig, "图 8  检索增强生成的两阶段工作流与本作品的位置")
+    save(fig, "fig-8-rag-workflow.png")
+
+
 if __name__ == "__main__":
-    fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7()
-    print("all figures written to", os.path.normpath(OUT))
+    fig1(); fig2(); fig3(); fig4(); fig5(); fig6(); fig7(); fig8()
